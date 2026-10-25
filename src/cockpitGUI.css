@@ -86,6 +86,14 @@
 .command-palette-form label,
 .command-palette-form input { min-width: 0; max-width: 100%; }
 
+.command-palette-form label { display: grid; gap: .35rem; }
+.command-palette-form input[aria-invalid="true"] { border-color: var(--cockpit-danger); }
+.command-palette-actions { display: flex; flex-wrap: wrap; gap: .35rem; }
+.workspace-summary { display: block; margin: .75rem 0; color: var(--cockpit-success); }
+.activity-list { display: grid; gap: .65rem; padding-left: 1.4rem; }
+.activity-list li { padding-left: .25rem; }
+.activity-list span { display: block; color: var(--cockpit-muted); }
+
 @media (max-width: 640px) {
   .cockpit-shell { grid-template-columns: minmax(0, 1fr); }
   .cockpit-navigation {
