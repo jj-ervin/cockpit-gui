@@ -63,9 +63,9 @@ On the feature branch after changes:
   tests, workflows, or private DEV-DOCS enter the tarball.
 - Existing CKP-GUI-004 interaction checks remain in the browser suite; no human
   or assistive-technology observations are claimed.
-- Hosted CI passed at code commit `22b0b45`: unit and package jobs on Node 22
-  and 24, and browser proof in Chromium, Firefox and WebKit. The report-only
-  closeout commit that follows will receive its own CI run.
+- Hosted CI passed at `edfe637`: unit and package jobs on Node 22 and 24, and
+  browser proof in Chromium, Firefox and WebKit. The implementation commit
+  `22b0b45` also passed all hosted checks; `edfe637` only recorded these results.
 
 First publication requires explicit owner approval that `jj-ervin` is the
 correct legal copyright holder (or a correction to the notice), confirmation of
