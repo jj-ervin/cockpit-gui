@@ -47,9 +47,11 @@ Cross-browser verification exposed two issues and both were fixed in scope:
   finish before a slow browser observed `loading`. The test now uses Playwright's
   clock to pause and advance simulated time; demo timing was not changed.
 - Hosted Linux browsers showed keyboard focus could leave the Service tab
-  partially clipped in the horizontally scrollable mobile tab row. Workspace
-  activation now scrolls the focused tab into view. The regression check reaches
-  Service with the End key and verifies the focused tab is visible.
+  partially clipped in the horizontally scrollable mobile tab row. The mobile
+  navigation's stable scrollbar gutter reserved 15 pixels and left insufficient
+  scroll range. Removing that gutter and scrolling the activated tab into view
+  fixes it. The regression check reaches Service with the End key and verifies
+  the focused tab is visible.
 
 ## Accessibility findings and limits
 

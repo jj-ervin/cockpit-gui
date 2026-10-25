@@ -199,9 +199,15 @@ test('320 CSS pixel reflow, mobile tab discoverability and touch targets', async
       const tab = document.querySelector('#cockpit-tab-service');
       const nav = navigation.getBoundingClientRect();
       const item = tab.getBoundingClientRect();
+      const visibleLeft = nav.left + navigation.clientLeft;
+      const visibleRight = visibleLeft + navigation.clientWidth;
       return {
         scrollLeft: navigation.scrollLeft,
-        visible: item.left >= nav.left && item.right <= nav.right,
+        visibleLeft,
+        visibleRight,
+        tabLeft: item.left,
+        tabRight: item.right,
+        visible: item.left >= visibleLeft && item.right <= visibleRight,
         active: document.activeElement === tab,
       };
     });

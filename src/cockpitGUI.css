@@ -100,7 +100,6 @@
     flex-direction: row;
     overflow-x: auto;
     padding-bottom: .35rem;
-    scrollbar-gutter: stable;
   }
   .cockpit-navigation__item { width: auto; min-width: max-content; }
 }
