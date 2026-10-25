@@ -41,11 +41,15 @@ Post-change results:
   only the five existing public package files; tests, docs, and private DEV-DOCS
   are excluded.
 
-The Firefox run exposed a race in the pre-existing service retry test: its 50 ms
-demo timer could finish before a slow browser observed `loading`. The test now
-uses Playwright's clock to pause and advance the simulated time. The demo's
-runtime behavior was not changed. No component behavior defect was demonstrated
-by these checks, so no component implementation was changed.
+Cross-browser verification exposed two issues and both were fixed in scope:
+
+- The pre-existing service retry test had a race: its 50 ms demo timer could
+  finish before a slow browser observed `loading`. The test now uses Playwright's
+  clock to pause and advance simulated time; demo timing was not changed.
+- Hosted Linux browsers showed keyboard focus could leave the Service tab
+  partially clipped in the horizontally scrollable mobile tab row. Workspace
+  activation now scrolls the focused tab into view. The regression check reaches
+  Service with the End key and verifies the focused tab is visible.
 
 ## Accessibility findings and limits
 

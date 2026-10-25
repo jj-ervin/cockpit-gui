@@ -89,7 +89,12 @@
       record.panel.hidden = !selected;
     });
     activeId = id;
-    if (moveFocus && typeof next.tab.focus === 'function') next.tab.focus();
+    if (moveFocus && typeof next.tab.focus === 'function') {
+      next.tab.focus();
+      if (typeof next.tab.scrollIntoView === 'function') {
+        next.tab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+    }
     if (typeof c.onNavigate === 'function') c.onNavigate(id);
     return true;
   }

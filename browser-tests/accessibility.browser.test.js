@@ -192,7 +192,8 @@ test('320 CSS pixel reflow, mobile tab discoverability and touch targets', async
     }
 
     const service = page.getByRole('tab', { name: 'Service' });
-    await service.focus();
+    await page.getByRole('tab', { name: 'Commands' }).focus();
+    await page.keyboard.press('End');
     const visible = await page.evaluate(() => {
       const navigation = document.querySelector('[role="tablist"]');
       const tab = document.querySelector('#cockpit-tab-service');
@@ -205,7 +206,7 @@ test('320 CSS pixel reflow, mobile tab discoverability and touch targets', async
       };
     });
     assert.ok(visible.scrollLeft > 0, 'keyboard focus scrolls the tab strip');
-    assert.equal(visible.visible, true, 'focused Service tab is fully visible');
+    assert.equal(visible.visible, true, 'focused Service tab is fully visible: ' + JSON.stringify(visible));
     assert.equal(visible.active, true);
 
     await page.addStyleTag({ content: 'html { font-size: 200% !important; }' });
