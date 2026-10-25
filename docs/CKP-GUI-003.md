@@ -1,6 +1,13 @@
 # CKP-GUI-003 — GUI integration and usability validation
 
-Status: implementation complete on `feature/ckp-gui-003`; review required; not merged or published.
+Status: implementation complete on `feature/ckp-gui-003`; merged to `main` on 2026-10-25 (merge commit `647358f`); not published.
+
+## Merge-status correction — 2026-10-25
+
+The original status line above has been updated after PR #2 merged. The baseline,
+feature-branch, CI, and limitation results below remain the results recorded at
+the time of CKP-GUI-003; they have not been retrospectively changed or rerun in
+this report.
 
 ## Scope and boundary
 
