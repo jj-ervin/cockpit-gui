@@ -21,3 +21,15 @@ Do not remove or redirect `cockpit/web/commandPaletteUI.js` yet. The original Co
 - [cockpit](https://github.com/jj-ervin/cockpit) — current operational implementation
 - [cockpit-core](https://github.com/jj-ervin/cockpit-core) — shared command/state contracts (planned)
 - [cockpit-web](https://github.com/jj-ervin/cockpit-web) — browser consumer (planned)
+
+## Standalone demo
+
+Open `demo/index.html` in a browser. It uses only files within this repository:
+the local `src/commandPaletteUI.js` module and its own inert host adapter.
+There are no package imports from another Cockpit repository.
+
+The demo intentionally does not execute providers. The review/approval steps
+only update a local on-page event log.
+
+Chromium verification: `node --test browser-tests/*.test.js` after installing
+the browser-test tooling documented in `.github/workflows/browser.yml`.
