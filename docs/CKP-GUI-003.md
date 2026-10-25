@@ -78,8 +78,10 @@ Feature branch local verification:
 - Visual inspection: 360 × 760 and 1280 × 900 Chromium screenshots showed the
   intended one-column/mobile-tab-row and two-column/desktop layouts.
 
-Hosted pull-request CI results will be recorded after the branch is pushed and
-the focused pull request is opened.
+Hosted verification on [pull request #2](https://github.com/jj-ervin/cockpit-gui/pull/2):
+
+- [Cockpit GUI CI](https://github.com/jj-ervin/cockpit-gui/actions/runs/40162830234): passed in 8 seconds.
+- [Cockpit GUI Browser Proof](https://github.com/jj-ervin/cockpit-gui/actions/runs/40162830242): passed in 37 seconds.
 
 ## Known limitations and human validation required
 
