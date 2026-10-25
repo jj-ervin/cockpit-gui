@@ -17,5 +17,7 @@ test('standalone demo opens, reviews and submits inert host intent',async()=>{
     assert.equal(await approve.isEnabled(),true);
     await approve.click();
     assert.match(await page.locator('#event-log').innerText(),/Host intent received: demo.preview/);
+    await page.getByRole('button',{name:'Clear intent log'}).click();
+    assert.equal(await page.locator('#event-log').innerText(),'No commands submitted.');
   }finally{await browser.close();}
 });
