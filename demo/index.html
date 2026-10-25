@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cockpit GUI — Independent Demo</title>
+<style>
+:root{font:16px system-ui,sans-serif;color-scheme:dark;background:#101722;color:#e7eef9}
+body{max-width:720px;margin:3rem auto;padding:0 1rem}
+header{border-bottom:1px solid #3b4a60;margin-bottom:1.5rem}
+button,input{font:inherit;padding:.55rem .8rem;margin:.25rem;border-radius:.4rem}
+button{cursor:pointer;background:#265c9c;color:#fff;border:1px solid #5f86c1}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible{outline:3px solid #e6bc5b}
+.command-palette-flow{border:1px solid #475c7a;border-radius:.7rem;padding:1rem;margin:1rem 0}
+.command-palette-form label{display:block;margin:.6rem 0}
+#event-log{background:#182433;padding:1rem;border-radius:.5rem;min-height:2rem;white-space:pre-wrap}
+small{color:#bac9dc}
+</style>
+</head>
+<body>
+<header><h1>Cockpit GUI</h1><p>Independent command-palette demonstration. No backend, provider or other Cockpit repository required.</p></header>
+<main>
+<h2>Example command</h2>
+<div id="list"><button id="launch" type="button">Open demo command</button></div>
+<div id="palette" aria-live="polite"></div>
+<h2>Host intent log</h2>
+<output id="event-log" aria-live="polite">No commands submitted.</output>
+<p><small>Approval here submits an inert demonstration intent; it never executes a real command.</small></p>
+</main>
+<script src="../src/commandPaletteUI.js"></script>
+<script>
+(function(){
+'use strict';
+var catalog={providers:[{id:'demo',name:'Demo provider',commands:[{id:'demo.preview',title:'Preview only'}]}]};
+var log=document.getElementById('event-log');
+var flow={
+select:function(){return{ok:true,parameterSchema:{}};},
+parameterize:function(){return{ok:true,parameters:{}};},
+review:function(){return{ok:true,approved:false,providerId:'demo',commandId:'demo.preview',parameters:{}};},
+approve:function(r){return Object.assign({},r,{approved:true});},
+invoke:function(approved){if(!approved.approved)throw Error('approval required');log.textContent='Host intent received: '+approved.commandId+' (demo only)';}
+};
+var ui=window.CockpitCommandPaletteUI({
+document:document,root:document.getElementById('palette'),list:document.getElementById('list'),catalog:catalog,host:{},
+resolverFactory:function(){return{resolve:function(){return{parameterSchema:{}};}};},
+commandInterfaceFactory:function(){return{};},
+parameterInteractionFactory:function(){return{fields:function(){return[];}};},
+reviewFactory:function(){return{};},
+flowFactory:function(){return flow;}
+});
+document.getElementById('launch').addEventListener('click',function(){ui.select('demo.preview');});
+})();
+</script>
+</body>
+</html>
