@@ -70,7 +70,7 @@ browser zoom, operating-system magnification, or on actual touch hardware.
 Human validation remains outstanding for announcement order and comprehension,
 task clarity, approval-boundary understanding, error recovery confidence, mobile
 tab discoverability by touch, and perceived workflow effort. No human findings
-are claimed. The review should also confirm hosted Firefox/WebKit CI results.
+are claimed. Hosted Chromium, Firefox and WebKit checks passed at commit `f05984c`.
 
 ## Residual risks
 
@@ -82,3 +82,4 @@ are claimed. The review should also confirm hosted Firefox/WebKit CI results.
 - Human testing may identify issues that automated checks cannot model.
 - The demo remains local and inert; it does not validate real providers,
   authorization, network behavior, persistence, or a consuming host.
+
