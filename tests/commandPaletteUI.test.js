@@ -65,3 +65,11 @@ test('cancel removes panel without invocation', () => {
   assert.equal(root.children.length, 0);
   assert.deepEqual(posted, []);
 });
+
+test('refresh retains an active selection present in the catalog', () => {
+  const { ui, root } = setup();
+  ui.select('demo.install');
+  assert.equal(root.children[0].dataset.commandId, 'demo.install');
+  ui.refresh();
+  assert.equal(root.children.length, 1);
+});
