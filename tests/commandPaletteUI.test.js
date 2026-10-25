@@ -7,7 +7,9 @@ function element(tag) {
   const handlers = {};
   return {
     tagName: tag, children: [], dataset: {}, textContent: '', disabled: false,
-    type: '', value: '', checked: false, parentNode: null,
+    type: '', value: '', checked: false, parentNode: null, attributes: {},
+    setAttribute(name,value) { this.attributes[name]=String(value); },
+    focus() { this.focused=true; },
     appendChild(child) { this.children.push(child); child.parentNode = this; return child; },
     removeChild(child) { this.children.splice(this.children.indexOf(child), 1); child.parentNode = null; },
     addEventListener(name, callback) { handlers[name] = callback; },
