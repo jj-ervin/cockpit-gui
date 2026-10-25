@@ -1,2 +1,13 @@
 node_modules/
 *.tgz
+
+# Internal dev docs — local/private only, not for public distribution
+AGENTS.md
+CHATGPT.md
+CLAUDE.md
+DEV-PATH.md
+DEV-PLAN.md
+DEV-RELEASE.md
+DEV-TRACKS.md
+REVIEW-GRAMMAR.md
+PLAY.jsonl
