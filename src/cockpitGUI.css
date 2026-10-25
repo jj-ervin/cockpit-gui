@@ -40,6 +40,21 @@
   border-color: var(--cockpit-focus);
 }
 
+.cockpit-navigation__item:focus-visible,
+.cockpit-panel:focus-visible,
+.command-palette-flow :focus-visible {
+  outline: 3px solid var(--cockpit-focus);
+  outline-offset: 2px;
+}
+
+@media (forced-colors: active) {
+  .cockpit-navigation__item:focus-visible,
+  .cockpit-panel:focus-visible,
+  .command-palette-flow :focus-visible {
+    outline-color: CanvasText;
+  }
+}
+
 .cockpit-panel-stack,
 .cockpit-panel,
 .cockpit-panel__body {

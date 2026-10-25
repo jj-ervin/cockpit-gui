@@ -83,3 +83,11 @@ are claimed. Hosted Chromium, Firefox and WebKit checks passed at commit `f05984
 - The demo remains local and inert; it does not validate real providers,
   authorization, network behavior, persistence, or a consuming host.
 
+## Merge-status correction — 2026-10-25
+
+The opening status and final verification note above describe the review state
+when this report was prepared. PR #4 was subsequently merged to `main` on
+2026-10-25 at merge commit `0f592adc348261bd89bacd805bc41a4e18077bbb`.
+The reported test results and limitations are preserved as originally recorded;
+this status correction does not change or retroactively rerun that evidence.
+
