@@ -2,10 +2,10 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
-const { chromium } = require('playwright');
+const browserType = require('playwright')[process.env.CKP_BROWSER || 'chromium'];
 
-test('real Chromium loads UMD GUI, preserves review gate, invokes only after explicit approval', async () => {
-  const browser = await chromium.launch({ headless: true });
+test('browser loads UMD GUI, preserves review gate, invokes only after explicit approval', async () => {
+  const browser = await browserType.launch({ headless: true });
   try {
     const page = await browser.newPage();
     await page.setContent('<main id="root"></main><div id="list"></div>');

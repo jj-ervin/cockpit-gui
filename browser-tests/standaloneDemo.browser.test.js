@@ -4,12 +4,12 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
-const { chromium } = require('playwright');
+const browserType = require('playwright')[process.env.CKP_BROWSER || 'chromium'];
 
 const demoUrl = pathToFileURL(path.resolve(__dirname, '../demo/index.html')).href;
 
 async function withDemo(viewport, run) {
-  const browser = await chromium.launch({ headless: true });
+  const browser = await browserType.launch({ headless: true });
   try {
     const page = await browser.newPage(viewport ? { viewport: viewport } : {});
     await page.goto(demoUrl);
@@ -67,14 +67,19 @@ test('clearing the command log returns the shared Activity panel to empty', asyn
 
 test('service error retry announces loading and reaches a repeatable recovery state', async () => {
   await withDemo(null, async page => {
+    await page.clock.install();
+    await page.clock.pauseAt(new Date(Date.now() + 60_000));
     await page.getByRole('tab', { name: 'Service' }).click();
     assert.match(await page.getByRole('alert').innerText(), /Demo service unavailable/);
     await page.getByRole('button', { name: 'Try again' }).click();
     assert.equal(await page.getByRole('tabpanel').getAttribute('data-state'), 'loading');
     assert.equal(await page.getByRole('tabpanel').getAttribute('aria-busy'), 'true');
+    await page.clock.runFor(60);
     await page.waitForSelector('.cockpit-panel[data-state="recovery"]');
     assert.match(await page.getByRole('status').innerText(), /Local-only mode is ready/);
     await page.getByRole('button', { name: 'Check again' }).click();
+    assert.equal(await page.getByRole('tabpanel').getAttribute('data-state'), 'loading');
+    await page.clock.runFor(60);
     await page.waitForSelector('.cockpit-panel[data-state="recovery"]');
     assert.equal(await page.getByRole('tabpanel').getAttribute('aria-busy'), 'false');
   });
