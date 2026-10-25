@@ -4,31 +4,41 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cockpit GUI — Independent Demo</title>
+<link rel="stylesheet" href="../src/cockpitGUI.css">
 <style>
 :root{font:16px system-ui,sans-serif;color-scheme:dark;background:#101722;color:#e7eef9}
-body{max-width:720px;margin:3rem auto;padding:0 1rem}
+body{max-width:1080px;margin:3rem auto;padding:0 1rem;overflow-wrap:anywhere}
 header{border-bottom:1px solid #3b4a60;margin-bottom:1.5rem}
 button,input{font:inherit;padding:.55rem .8rem;margin:.25rem;border-radius:.4rem}
 button{cursor:pointer;background:#265c9c;color:#fff;border:1px solid #5f86c1}
 button:disabled{opacity:.45;cursor:not-allowed}
 button:focus-visible,input:focus-visible{outline:3px solid #e6bc5b}
-.command-palette-flow{border:1px solid #475c7a;border-radius:.7rem;padding:1rem;margin:1rem 0}
 .command-palette-form label{display:block;margin:.6rem 0}
-#event-log{background:#182433;padding:1rem;border-radius:.5rem;min-height:2rem;white-space:pre-wrap}
+#event-log{display:block;background:#182433;padding:1rem;margin:.5rem 0;border-radius:.5rem;min-height:2rem;white-space:pre-wrap}
 small{color:#bac9dc}
+@media(max-width:640px){body{margin:1rem auto}}
 </style>
 </head>
 <body>
 <header><h1>Cockpit GUI</h1><p>Independent command-palette demonstration. No backend, provider or other Cockpit repository required.</p></header>
-<main>
-<h2>Example command</h2>
-<div id="list"><button id="launch" type="button">Open demo command</button></div>
-<div id="palette" aria-live="polite"></div>
-<h2>Host intent log</h2>
-<button id="clear-log" type="button">Clear intent log</button>
-<output id="event-log" aria-live="polite">No commands submitted.</output>
-<p><small>Approval here submits an inert demonstration intent; it never executes a real command.</small></p>
+<main class="cockpit-shell">
+<nav id="workspace-navigation"></nav>
+<div id="workspace-panels"></div>
 </main>
+<div id="command-content" hidden>
+  <p>Review and approve a local demonstration command.</p>
+  <div id="list"><button id="launch" type="button">Open demo command</button></div>
+  <div id="palette" aria-live="polite"></div>
+  <h3>Host intent log</h3>
+  <button id="clear-log" type="button">Clear intent log</button>
+  <output id="event-log" aria-live="polite">No commands submitted.</output>
+  <p><small>Approval here submits an inert demonstration intent; it never executes a real command.</small></p>
+</div>
+<div id="overview-content" hidden>
+  <p>The reusable shell keeps navigation, focus, panel states and narrow layouts consistent.</p>
+  <div class="cockpit-overflow"><pre>provider.command.with.a.deliberately.long.identifier.for.local-overflow-testing</pre></div>
+</div>
+<script src="../src/workspaceUI.js"></script>
 <script src="../src/commandPaletteUI.js"></script>
 <script>
 (function(){
@@ -36,6 +46,17 @@ small{color:#bac9dc}
 var catalog={providers:[{id:'demo',name:'Demo provider',commands:[{id:'demo.preview',title:'Preview only'}]}]};
 var log=document.getElementById('event-log');
 var intents=[];
+var commandContent=document.getElementById('command-content');commandContent.hidden=false;
+var overviewContent=document.getElementById('overview-content');overviewContent.hidden=false;
+function retryService(ui,id){ui.setPanelState(id,'loading',{message:'Checking the local demo…'});setTimeout(function(){ui.setPanelState(id,'recovery',{message:'Local-only mode is ready.',actionLabel:'Check again',onRetry:retryService});},50);}
+var workspace=window.CockpitWorkspaceUI({
+document:document,navigationRoot:document.getElementById('workspace-navigation'),panelRoot:document.getElementById('workspace-panels'),initialId:'commands',
+items:[
+{id:'overview',label:'Overview',state:'populated',payload:{node:overviewContent}},
+{id:'commands',label:'Commands',state:'populated',payload:{node:commandContent}},
+{id:'activity',label:'Activity',state:'empty',payload:{title:'No activity yet',message:'Submitted host intents will appear in the local log.'}},
+{id:'service',label:'Service',state:'error',payload:{title:'Demo service unavailable',message:'This inert demo has no remote service.',onRetry:retryService}}
+]});
 function renderLog(){log.textContent=intents.length?intents.join('\n'):'No commands submitted.';}
 document.getElementById('clear-log').addEventListener('click',function(){intents=[];renderLog();});
 var flow={
@@ -53,7 +74,7 @@ parameterInteractionFactory:function(){return{fields:function(){return[];}};},
 reviewFactory:function(){return{};},
 flowFactory:function(){return flow;}
 });
-document.getElementById('launch').addEventListener('click',function(){ui.select('demo.preview');});
+document.getElementById('launch').addEventListener('click',function(event){ui.select('demo.preview',event.currentTarget);});
 })();
 </script>
 </body>

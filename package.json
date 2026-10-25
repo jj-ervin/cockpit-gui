@@ -4,11 +4,14 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "test": "node --test tests/*.test.js"
+    "test": "node --test tests/*.test.js",
+    "test:browser": "node --test browser-tests/*.test.js"
   },
   "main": "./src/commandPaletteUI.js",
   "exports": {
-    ".": "./src/commandPaletteUI.js"
+    ".": "./src/commandPaletteUI.js",
+    "./workspace": "./src/workspaceUI.js",
+    "./styles.css": "./src/cockpitGUI.css"
   },
   "files": [
     "src/"

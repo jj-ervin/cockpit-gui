@@ -16,3 +16,4 @@ jobs:
           node-version: '22'
       - run: npm test
       - run: node --check src/commandPaletteUI.js
+      - run: node --check src/workspaceUI.js

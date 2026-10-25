@@ -6,13 +6,17 @@ Reusable, host-neutral Cockpit interface components. **Extraction in progress; n
 - `src/commandPaletteUI.js`: staged from `jj-ervin/cockpit/web/commandPaletteUI.js`.
 - Provides command selection, parameter field presentation, explicit review and host-intent handoff.
 - Receives catalog, DOM, resolver, command interaction, validation, and host integrations via dependency injection. It **does not** execute providers or grant permission.
+- `src/workspaceUI.js`: local tab navigation plus reusable populated, empty, loading, error and recovery panel states.
+- `src/cockpitGUI.css`: shared responsive shell, contained overflow and visible-focus styling. Narrow layouts switch to a horizontally scrollable tab row rather than compressing panel content.
 
 ## Local validation
 ```sh
 npm test
+npm run test:browser
 node --check src/commandPaletteUI.js
+node --check src/workspaceUI.js
 ```
-The tests are contract-level smoke tests; they do not replace upstream browser and host-web integration tests.
+The unit tests are contract-level checks. The browser suite verifies the standalone demo in real Chromium, including keyboard navigation, focus restoration, panel recovery, narrow layout and contained overflow; it does not replace upstream consumer or host integration tests.
 
 ## Migration rule
 Do not remove or redirect `cockpit/web/commandPaletteUI.js` yet. The original Cockpit runtime remains authoritative until explicit, tested consumer cutover. See [CKP-GUI-001](docs/CKP-GUI-001.md) for ownership and release gates.

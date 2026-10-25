@@ -1,0 +1,98 @@
+:root {
+  --cockpit-bg: #101722;
+  --cockpit-surface: #182433;
+  --cockpit-surface-raised: #202e41;
+  --cockpit-border: #475c7a;
+  --cockpit-text: #e7eef9;
+  --cockpit-muted: #bac9dc;
+  --cockpit-accent: #5f86c1;
+  --cockpit-focus: #e6bc5b;
+  --cockpit-danger: #ffb4ab;
+  --cockpit-success: #9bd6b4;
+}
+
+* { box-sizing: border-box; }
+
+.cockpit-shell {
+  display: grid;
+  grid-template-columns: minmax(11rem, 14rem) minmax(0, 1fr);
+  gap: 1rem;
+  min-width: 0;
+}
+
+.cockpit-navigation {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  min-width: 0;
+}
+
+.cockpit-navigation__item {
+  width: 100%;
+  margin: 0;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.cockpit-navigation__item[aria-selected="true"] {
+  background: var(--cockpit-surface-raised);
+  border-color: var(--cockpit-focus);
+}
+
+.cockpit-panel-stack,
+.cockpit-panel,
+.cockpit-panel__body {
+  min-width: 0;
+}
+
+.cockpit-panel {
+  border: 1px solid var(--cockpit-border);
+  border-radius: .7rem;
+  padding: clamp(.85rem, 2vw, 1.25rem);
+  background: var(--cockpit-surface);
+  overflow: hidden;
+}
+
+.cockpit-panel[hidden] { display: none; }
+.cockpit-panel__title { margin-top: 0; }
+
+.cockpit-panel-state {
+  padding: 1rem;
+  border: 1px dashed var(--cockpit-border);
+  border-radius: .55rem;
+  color: var(--cockpit-muted);
+}
+
+.cockpit-panel-state h3 { color: var(--cockpit-text); margin-top: 0; }
+.cockpit-panel-state--error { border-color: var(--cockpit-danger); }
+.cockpit-panel-state--recovery { border-color: var(--cockpit-success); }
+.cockpit-overflow { max-width: 100%; overflow: auto; scrollbar-gutter: stable; }
+
+.command-palette-flow {
+  max-width: 100%;
+  overflow: auto;
+  border: 1px solid var(--cockpit-border);
+  border-radius: .7rem;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.command-palette-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: .75rem;
+}
+
+.command-palette-form label,
+.command-palette-form input { min-width: 0; max-width: 100%; }
+
+@media (max-width: 640px) {
+  .cockpit-shell { grid-template-columns: minmax(0, 1fr); }
+  .cockpit-navigation {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: .35rem;
+    scrollbar-gutter: stable;
+  }
+  .cockpit-navigation__item { width: auto; min-width: max-content; }
+}
