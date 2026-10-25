@@ -25,6 +25,7 @@ small{color:#bac9dc}
 <div id="list"><button id="launch" type="button">Open demo command</button></div>
 <div id="palette" aria-live="polite"></div>
 <h2>Host intent log</h2>
+<button id="clear-log" type="button">Clear intent log</button>
 <output id="event-log" aria-live="polite">No commands submitted.</output>
 <p><small>Approval here submits an inert demonstration intent; it never executes a real command.</small></p>
 </main>
@@ -34,12 +35,15 @@ small{color:#bac9dc}
 'use strict';
 var catalog={providers:[{id:'demo',name:'Demo provider',commands:[{id:'demo.preview',title:'Preview only'}]}]};
 var log=document.getElementById('event-log');
+var intents=[];
+function renderLog(){log.textContent=intents.length?intents.join('\n'):'No commands submitted.';}
+document.getElementById('clear-log').addEventListener('click',function(){intents=[];renderLog();});
 var flow={
 select:function(){return{ok:true,parameterSchema:{}};},
 parameterize:function(){return{ok:true,parameters:{}};},
 review:function(){return{ok:true,approved:false,providerId:'demo',commandId:'demo.preview',parameters:{}};},
 approve:function(r){return Object.assign({},r,{approved:true});},
-invoke:function(approved){if(!approved.approved)throw Error('approval required');log.textContent='Host intent received: '+approved.commandId+' (demo only)';}
+invoke:function(approved){if(!approved.approved)throw Error('approval required');intents.push('Host intent received: '+approved.commandId+' (demo only)');renderLog();}
 };
 var ui=window.CockpitCommandPaletteUI({
 document:document,root:document.getElementById('palette'),list:document.getElementById('list'),catalog:catalog,host:{},
