@@ -106,3 +106,18 @@ The supported exports and compatibility details are listed in
 the development division of Osprey Strategic Holdings LLC. The repository's
 extraction record and consumer migration gates are in
 [CKP-GUI-001](https://github.com/jj-ervin/cockpit-gui/blob/main/docs/CKP-GUI-001.md).
+
+## Adoption status
+
+CKP-GUI-006 is the controlled consumer-pilot review for `0.1.0`. The private
+`jj-ervin/cockpit-web` candidate consumes an integrity-pinned package tarball
+through the supported workspace and stylesheet exports; it does not import
+sibling source or use a development link. See
+[the adoption-readiness report](docs/CKP-GUI-006.md).
+
+Merging the CKP-GUI-006 library and consumer PRs after their required checks is
+the explicit owner acceptance point. At that point, `@cockpit/gui@0.1.0` is
+adoption-ready only within the report's tested private scope and this project
+enters maintenance mode. Maintenance means compatible fixes, dependency and
+security upkeep, and evidence-backed consumer issues; it does not authorize a
+new roadmap, public publication, broad migration, or speculative features.

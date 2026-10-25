@@ -6,6 +6,10 @@ currently authorized.
 
 ## [0.1.0] - Unreleased
 
+- Add the CKP-GUI-006 controlled consumer-pilot evidence and repeatable private
+  artifact adoption procedure.
+- Define merge of the paired library and consumer review PRs as the owner
+  acceptance point for tested-scope adoption readiness and maintenance mode.
 - Establish the initial supported API for command palette and workspace
   factories, plus the shared stylesheet entry point.
 - Add packed-artifact and isolated consumer installation checks.
