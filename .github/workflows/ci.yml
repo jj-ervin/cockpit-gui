@@ -17,3 +17,4 @@ jobs:
       - run: npm test
       - run: node --check src/commandPaletteUI.js
       - run: node --check src/workspaceUI.js
+      - run: node --check demo/app.js

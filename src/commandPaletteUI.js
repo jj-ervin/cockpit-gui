@@ -1,8 +1,168 @@
-(function (root, factory) { if (typeof module === 'object' && module.exports) module.exports = factory; else root.CockpitCommandPaletteUI = factory; }(typeof window !== 'undefined' ? window : globalThis, function createCommandPaletteUI(options) {
-  const c = options || {}; if (!c.document || !c.root || !c.list || !c.catalog || !c.flowFactory) throw new TypeError('CommandPaletteUI requires document, root, list, catalog, and flowFactory'); let active = null;
-  function clear(n){while(n.firstChild)n.removeChild(n.firstChild);} function t(tag,v){const n=c.document.createElement(tag);n.textContent=String(v==null?'':v);return n;}
-  function entry(id){for(const p of c.catalog.providers||[])for(const cmd of p.commands||[])if(cmd&&cmd.id===id)return{provider:p,command:cmd};return null;}
-  function close(){const restore=active&&active.restoreFocus;if(active&&active.panel&&active.panel.parentNode)active.panel.parentNode.removeChild(active.panel);active=null;if(restore&&restore.parentNode&&typeof restore.focus==='function')restore.focus();}
-  function select(id,trigger){close();const restoreFocus=trigger||(c.document&&c.document.activeElement);const e=entry(id);if(!e)return;const resolver=c.resolverFactory(c.catalog),resolved=resolver.resolve(id);if(!resolved)return;const flow=c.flowFactory({commandInterface:c.commandInterfaceFactory({host:c.host,resolve:resolver.resolve}),parameterInteraction:c.parameterInteractionFactory(resolved.parameterSchema),commandReview:c.reviewFactory()});const req=flow.select(id);if(!req.ok)return;const panel=c.document.createElement('section');panel.className='command-palette-flow';panel.dataset.commandId=id;panel.dataset.state='populated';panel.setAttribute('aria-label','Command review: '+e.command.title);panel.addEventListener('keydown',function(event){if(event.key==='Escape'){event.preventDefault();close();}});panel.appendChild(t('h3',e.provider.name+' — '+e.command.title));panel.appendChild(t('p',id));const form=c.document.createElement('div');form.className='command-palette-form';const inputs={};c.parameterInteractionFactory(req.parameterSchema||{}).fields().forEach(function(f){const label=t('label',f.label||f.id);const input=c.document.createElement('input');input.dataset.fieldId=f.id;input.type=f.type==='number'?'number':f.type==='boolean'?'checkbox':'text';label.appendChild(input);form.appendChild(label);inputs[f.id]=input;});panel.appendChild(form);const status=t('p','Enter parameters, then review before invocation.');status.setAttribute('role','status');status.setAttribute('aria-live','polite');panel.appendChild(status);const actions=c.document.createElement('div');const review=t('button','Review');review.type='button';const approve=t('button','Approve & Invoke');approve.type='button';approve.disabled=true;const cancel=t('button','Cancel');cancel.type='button';actions.appendChild(review);actions.appendChild(approve);actions.appendChild(cancel);panel.appendChild(actions);review.addEventListener('click',function(){const values={};Object.keys(inputs).forEach(function(k){values[k]=inputs[k].type==='checkbox'?inputs[k].checked:inputs[k].value;});const result=flow.parameterize(req,values);if(!result.ok){panel.dataset.state='error';status.textContent=result.errors.map(function(x){return x.field+': '+x.error;}).join(' | ');approve.disabled=true;return;}panel.dataset.state='recovery';active.reviewed=flow.review(req,result);status.textContent='Review ready. Explicit approval is required before invocation.';approve.disabled=false;});approve.addEventListener('click',function(){if(!active||!active.reviewed)return;flow.invoke(flow.approve(active.reviewed));panel.dataset.state='populated';status.textContent='Invocation submitted to the existing host intent seam.';approve.disabled=true;review.disabled=true;if(c.onInvoke)c.onInvoke();});cancel.addEventListener('click',close);c.root.appendChild(panel);active={panel:panel,reviewed:null,restoreFocus:restoreFocus};if(typeof review.focus==='function')review.focus();}
-  function refresh(){if(active&&!entry(active.panel.dataset.commandId))close();} return Object.freeze({select:select,refresh:refresh,close:close});
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory;
+  else root.CockpitCommandPaletteUI = factory;
+}(typeof window !== 'undefined' ? window : globalThis, function createCommandPaletteUI(options) {
+  'use strict';
+
+  const c = options || {};
+  if (!c.document || !c.root || !c.list || !c.catalog || !c.flowFactory) {
+    throw new TypeError('CommandPaletteUI requires document, root, list, catalog, and flowFactory');
+  }
+
+  let active = null;
+
+  function textElement(tag, value) {
+    const node = c.document.createElement(tag);
+    node.textContent = String(value == null ? '' : value);
+    return node;
+  }
+
+  function entry(id) {
+    for (const provider of c.catalog.providers || []) {
+      for (const command of provider.commands || []) {
+        if (command && command.id === id) return { provider: provider, command: command };
+      }
+    }
+    return null;
+  }
+
+  function close() {
+    const restore = active && active.restoreFocus;
+    if (active && active.panel && active.panel.parentNode) active.panel.parentNode.removeChild(active.panel);
+    active = null;
+    if (restore && restore.parentNode && typeof restore.focus === 'function') restore.focus();
+  }
+
+  function select(id, trigger) {
+    close();
+    const restoreFocus = trigger || (c.document && c.document.activeElement);
+    const selected = entry(id);
+    if (!selected) return;
+
+    const resolver = c.resolverFactory(c.catalog);
+    const resolved = resolver.resolve(id);
+    if (!resolved) return;
+    const flow = c.flowFactory({
+      commandInterface: c.commandInterfaceFactory({ host: c.host, resolve: resolver.resolve }),
+      parameterInteraction: c.parameterInteractionFactory(resolved.parameterSchema),
+      commandReview: c.reviewFactory(),
+    });
+    const request = flow.select(id);
+    if (!request.ok) return;
+
+    const panel = c.document.createElement('section');
+    panel.className = 'command-palette-flow';
+    panel.dataset.commandId = id;
+    panel.dataset.state = 'populated';
+    panel.setAttribute('aria-label', 'Command review: ' + selected.command.title);
+    panel.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        close();
+      }
+    });
+    panel.appendChild(textElement('h3', selected.provider.name + ' — ' + selected.command.title));
+    panel.appendChild(textElement('p', id));
+
+    const form = c.document.createElement('div');
+    form.className = 'command-palette-form';
+    const inputs = {};
+    c.parameterInteractionFactory(request.parameterSchema || {}).fields().forEach(function (field) {
+      const label = textElement('label', field.label || field.id);
+      const input = c.document.createElement('input');
+      input.dataset.fieldId = field.id;
+      input.id = 'command-field-' + String(field.id).replace(/[^a-zA-Z0-9_-]/g, '-');
+      input.type = field.type === 'number' ? 'number' : field.type === 'boolean' ? 'checkbox' : 'text';
+      if (field.required) input.setAttribute('required', '');
+      label.setAttribute('for', input.id);
+      label.appendChild(input);
+      form.appendChild(label);
+      inputs[field.id] = input;
+    });
+    panel.appendChild(form);
+
+    const status = textElement('p', 'Enter parameters, then review before invocation.');
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-live', 'polite');
+    panel.appendChild(status);
+
+    const actions = c.document.createElement('div');
+    actions.className = 'command-palette-actions';
+    const review = textElement('button', 'Review');
+    review.type = 'button';
+    const approve = textElement('button', 'Approve & Invoke');
+    approve.type = 'button';
+    approve.disabled = true;
+    const cancel = textElement('button', 'Cancel');
+    cancel.type = 'button';
+    actions.appendChild(review);
+    actions.appendChild(approve);
+    actions.appendChild(cancel);
+    panel.appendChild(actions);
+
+    review.addEventListener('click', function () {
+      const values = {};
+      Object.keys(inputs).forEach(function (key) {
+        inputs[key].removeAttribute('aria-invalid');
+        values[key] = inputs[key].type === 'checkbox' ? inputs[key].checked : inputs[key].value;
+      });
+      const result = flow.parameterize(request, values);
+      if (!result.ok) {
+        const errors = Array.isArray(result.errors) ? result.errors : [];
+        panel.dataset.state = 'error';
+        status.setAttribute('role', 'alert');
+        status.setAttribute('aria-live', 'assertive');
+        status.textContent = errors.length
+          ? errors.map(function (error) { return error.field + ': ' + error.error; }).join(' | ')
+          : 'The command parameters could not be reviewed.';
+        approve.disabled = true;
+        active.reviewed = null;
+        const firstInvalid = errors.map(function (error) { return inputs[error.field]; }).find(Boolean);
+        errors.forEach(function (error) {
+          if (inputs[error.field]) inputs[error.field].setAttribute('aria-invalid', 'true');
+        });
+        if (firstInvalid && typeof firstInvalid.focus === 'function') firstInvalid.focus();
+        return;
+      }
+
+      panel.dataset.state = 'recovery';
+      status.setAttribute('role', 'status');
+      status.setAttribute('aria-live', 'polite');
+      active.reviewed = flow.review(request, result);
+      status.textContent = 'Review ready. Explicit approval is required before invocation.';
+      approve.disabled = false;
+    });
+
+    approve.addEventListener('click', function () {
+      if (!active || !active.reviewed) return;
+      try {
+        flow.invoke(flow.approve(active.reviewed));
+      } catch (error) {
+        panel.dataset.state = 'error';
+        status.setAttribute('role', 'alert');
+        status.setAttribute('aria-live', 'assertive');
+        status.textContent = 'Invocation could not be submitted. Review the command and try again.';
+        if (typeof c.onInvokeError === 'function') c.onInvokeError(error);
+        return;
+      }
+      panel.dataset.state = 'populated';
+      status.setAttribute('role', 'status');
+      status.setAttribute('aria-live', 'polite');
+      status.textContent = 'Invocation submitted to the existing host intent seam.';
+      approve.disabled = true;
+      review.disabled = true;
+      if (c.onInvoke) c.onInvoke();
+    });
+    cancel.addEventListener('click', close);
+
+    c.root.appendChild(panel);
+    active = { panel: panel, reviewed: null, restoreFocus: restoreFocus };
+    if (typeof review.focus === 'function') review.focus();
+  }
+
+  function refresh() {
+    if (active && !entry(active.panel.dataset.commandId)) close();
+  }
+
+  return Object.freeze({ select: select, refresh: refresh, close: close });
 }));

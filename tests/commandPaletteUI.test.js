@@ -10,6 +10,7 @@ function element(tag) {
     tagName: tag, children: [], dataset: {}, textContent: '', disabled: false,
     type: '', value: '', checked: false, parentNode: null, attributes: {},
     setAttribute(name,value) { this.attributes[name]=String(value); },
+    removeAttribute(name) { delete this.attributes[name]; },
     focus() { this.focused=true; activeElement=this; },
     appendChild(child) { this.children.push(child); child.parentNode = this; return child; },
     removeChild(child) { this.children.splice(this.children.indexOf(child), 1); child.parentNode = null; },
@@ -87,4 +88,53 @@ test('refresh retains an active selection present in the catalog', () => {
   assert.equal(root.children[0].dataset.commandId, 'demo.install');
   ui.refresh();
   assert.equal(root.children.length, 1);
+});
+
+test('validation errors identify and focus the field, then recover for review', () => {
+  const root = element('div');
+  const request = { ok: true, parameterSchema: { fields: [{ id: 'target', label: 'Target', required: true }] } };
+  const flow = {
+    select() { return request; },
+    parameterize(unused, values) {
+      return values.target
+        ? { ok: true, parameters: values }
+        : { ok: false, errors: [{ field: 'target', error: 'Required.' }] };
+    },
+    review(unused, result) { return { ok: true, parameters: result.parameters }; },
+    approve(review) { return review; },
+    invoke() {},
+  };
+  const ui = createUI({
+    document: { createElement: element, get activeElement() { return activeElement; } },
+    root,
+    list: element('div'),
+    catalog: { providers: [{ id: 'demo', name: 'Demo', commands: [{ id: 'demo.install', title: 'Install' }] }] },
+    host: {},
+    resolverFactory: () => ({ resolve: () => ({ parameterSchema: request.parameterSchema }) }),
+    commandInterfaceFactory: () => ({}),
+    parameterInteractionFactory: schema => ({ fields: () => schema.fields || [] }),
+    reviewFactory: () => ({}),
+    flowFactory: () => flow,
+  });
+
+  ui.select('demo.install');
+  const input = find(root, node => node.dataset.fieldId === 'target');
+  const review = find(root, node => node.textContent === 'Review');
+  const approve = find(root, node => node.textContent === 'Approve & Invoke');
+  const status = find(root, node => node.attributes['aria-live'] === 'polite');
+  review.click();
+  assert.equal(root.children[0].dataset.state, 'error');
+  assert.equal(status.attributes.role, 'alert');
+  assert.equal(status.attributes['aria-live'], 'assertive');
+  assert.equal(input.attributes['aria-invalid'], 'true');
+  assert.equal(activeElement, input);
+  assert.equal(approve.disabled, true);
+
+  input.value = 'local-preview';
+  review.click();
+  assert.equal(root.children[0].dataset.state, 'recovery');
+  assert.equal(status.attributes.role, 'status');
+  assert.equal(status.attributes['aria-live'], 'polite');
+  assert.equal(input.attributes['aria-invalid'], undefined);
+  assert.equal(approve.disabled, false);
 });
