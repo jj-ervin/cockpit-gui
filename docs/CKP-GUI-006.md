@@ -74,7 +74,16 @@ Consumer candidate:
 - Rollback archive from consumer `main`: README only; no package or runtime
   files remained.
 
-Exact hosted run links and commit IDs must be appended after both PRs run CI.
+Hosted evidence at the implementation/documentation heads:
+
+- Cockpit Web commit `b78adb3ec6baa0cea19970f6a7a6d0a7f7b284e3`:
+  [run 40180985746](https://github.com/jj-ervin/cockpit-web/actions/runs/40180985746)
+  passed Node 22, Node 24, and Chromium jobs.
+- Cockpit GUI commit `e12871e83850703f017033ffe29277f90d226745`:
+  [browser run 40180988847](https://github.com/jj-ervin/cockpit-gui/actions/runs/40180988847)
+  passed Chromium, Firefox, and WebKit jobs; [package/unit run
+  40180988872](https://github.com/jj-ervin/cockpit-gui/actions/runs/40180988872)
+  passed Node 22 and Node 24 jobs.
 
 ## Known limitations
 
