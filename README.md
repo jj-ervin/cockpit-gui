@@ -1,45 +1,107 @@
-# cockpit-gui
+# @cockpit/gui
 
-Reusable, host-neutral Cockpit interface components. **Extraction in progress; not a published package.**
+Host-neutral GUI components for presenting command intents and workspace
+panels. The package is independently versioned and has no runtime dependencies
+on Cockpit Core, Cockpit Web, provider packages, or sibling repositories.
 
-## Current module
-- `src/commandPaletteUI.js`: staged from `jj-ervin/cockpit/web/commandPaletteUI.js`.
-- Provides command selection, parameter field presentation, explicit review and host-intent handoff.
-- Receives catalog, DOM, resolver, command interaction, validation, and host integrations via dependency injection. It **does not** execute providers or grant permission.
-- `src/workspaceUI.js`: local tab navigation plus reusable populated, empty, loading, error and recovery panel states.
-- `src/cockpitGUI.css`: shared responsive shell, contained overflow and visible-focus styling. Narrow layouts switch to a horizontally scrollable tab row rather than compressing panel content.
-- `demo/app.js`: standalone integration wiring only. It gives the existing components shared in-memory state without becoming package API or importing another repository.
+**Release status:** the `0.1.0` package candidate is prepared, but it has not
+been published. Install from npm only after the owner approves and completes the
+first release. The MIT license is in [LICENSE](LICENSE); copyright notices must
+be retained when redistributing the package.
 
-## Local validation
+## Install
+
+After an approved public release:
+
 ```sh
-npm test
-npm run test:browser
-node --check src/commandPaletteUI.js
-node --check src/workspaceUI.js
-node --check demo/app.js
+npm install @cockpit/gui
 ```
-The unit tests are contract-level checks. The browser suite verifies the standalone demo in real Chromium, including keyboard navigation, focus restoration, panel recovery, narrow layout and contained overflow; it does not replace upstream consumer or host integration tests.
 
-## Migration rule
-Do not remove or redirect `cockpit/web/commandPaletteUI.js` yet. The original Cockpit runtime remains authoritative until explicit, tested consumer cutover. See [CKP-GUI-001](docs/CKP-GUI-001.md) for ownership and release gates.
+To exercise the package from a local checkout without publishing:
 
-## Related repositories
-- [cockpit](https://github.com/jj-ervin/cockpit) — current operational implementation
-- [cockpit-core](https://github.com/jj-ervin/cockpit-core) — shared command/state contracts (planned)
-- [cockpit-web](https://github.com/jj-ervin/cockpit-web) — browser consumer (planned)
+```sh
+npm pack
+npm install ./cockpit-gui-0.1.0.tgz
+```
+
+The package supports Node.js 22 and later for CommonJS or Node ESM imports.
+Browser use targets current evergreen Chromium, Firefox, and WebKit engines.
+The package itself has no Node runtime dependency; Node is needed by the
+consumer only when loading the CommonJS module entry points. CSS is exported as
+a stylesheet for a bundler or CSS-aware tool to load.
+
+## Workspace example
+
+```js
+import createWorkspaceUI from '@cockpit/gui/workspace';
+import '@cockpit/gui/styles.css';
+
+const workspace = createWorkspaceUI({
+  document,
+  navigationRoot: document.querySelector('#tabs'),
+  panelRoot: document.querySelector('#panels'),
+  initialId: 'activity',
+  items: [
+    { id: 'activity', label: 'Activity', state: 'empty' },
+    { id: 'service', label: 'Service', state: 'loading' },
+  ],
+  onNavigate(id) {
+    console.log('Selected workspace section:', id);
+  },
+});
+
+workspace.setPanelState('activity', 'populated', {
+  text: 'A host-owned activity summary.',
+});
+```
+
+The host owns the DOM roots and panel data. `WorkspaceUI` creates accessible
+tab and panel relationships, keyboard navigation, and panel state presentation.
+See [the package contract](docs/PACKAGE-CONTRACTS.md) for the complete API and a
+command palette adapter example.
+
+## Command intents and execution boundary
+
+`CommandPaletteUI` gathers input, presents errors, requires review, and exposes
+an explicit approval action. It passes the approved request through the
+injected host flow. It does not discover providers, grant authorization, or
+execute provider code. The host/provider integration owns those decisions and
+effects. UI approval is an interaction state; it is not a security boundary.
 
 ## Standalone demo
 
-Open `demo/index.html` in a browser. It uses only files within this repository:
-the local command palette and workspace modules plus its own inert host adapter.
-There are no package imports from another Cockpit repository. Approved command
-intents update both the command log and Activity panel through shared in-memory
-demo state; clearing the log returns Activity to its empty state.
+Open `demo/index.html` in a browser. It uses only files in this repository and
+an inert local adapter. Its in-memory state resets on reload and never executes
+a provider. It is not an example of a production authorization or host adapter.
 
-The demo intentionally does not execute providers. Validation, review, approval,
-service recovery and activity history remain local to the page and reset on reload.
+## Validation
 
-Chromium verification: `node --test browser-tests/*.test.js` after installing
-the browser-test tooling documented in `.github/workflows/browser.yml`.
-See [CKP-GUI-003](docs/CKP-GUI-003.md) for the integration and usability
-validation record, accessibility findings and human-testing limits.
+```sh
+npm ci
+npm test
+npm run test:package
+npm run test:browser
+```
+
+CI tests unit and package distribution behavior on Node.js 22 and 24. The
+browser workflow runs Chromium, Firefox, and WebKit. Accessibility checks include
+axe rules, semantics, keyboard/focus, forced-colors emulation, text contrast,
+reflow, zoom-style resizing, and target-size checks. They do not certify WCAG
+conformance or replace human screen-reader, assistive-technology, device, or
+usability evaluation. See the repository's [CKP-GUI-004 results](https://github.com/jj-ervin/cockpit-gui/blob/main/docs/CKP-GUI-004.md)
+and [proposed usability protocol](https://github.com/jj-ervin/cockpit-gui/blob/main/docs/CKP-GUI-004-USABILITY-PROTOCOL.md).
+
+## Versioning and changes
+
+The package is pre-1.0.0. Patch releases contain backward-compatible fixes;
+minor releases may add backward-compatible exports or behavior; breaking API
+changes before 1.0.0 require a minor version increment and a migration note.
+After 1.0.0, breaking changes require a major version. Deprecated supported
+exports will be documented in the changelog and retained for at least one
+minor release before removal, except when a security or legal issue requires
+faster action. Every release candidate must update [CHANGELOG.md](CHANGELOG.md).
+
+The supported exports and compatibility details are listed in
+[docs/PACKAGE-CONTRACTS.md](docs/PACKAGE-CONTRACTS.md). The repository's
+extraction record and consumer migration gates are in
+[CKP-GUI-001](https://github.com/jj-ervin/cockpit-gui/blob/main/docs/CKP-GUI-001.md).
