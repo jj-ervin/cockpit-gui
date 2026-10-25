@@ -32,6 +32,7 @@
   margin: 0;
   text-align: left;
   white-space: nowrap;
+  scroll-margin-inline: .5rem;
 }
 
 .cockpit-navigation__item[aria-selected="true"] {
