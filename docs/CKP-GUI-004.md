@@ -49,9 +49,10 @@ Cross-browser verification exposed two issues and both were fixed in scope:
 - Hosted Linux browsers showed keyboard focus could leave the Service tab
   partially clipped in the horizontally scrollable mobile tab row. The mobile
   navigation's stable scrollbar gutter reserved 15 pixels and left insufficient
-  scroll range. Removing that gutter and scrolling the activated tab into view
-  fixes it. The regression check reaches Service with the End key and verifies
-  the focused tab is visible.
+  scroll range. Removing that gutter, leaving trailing scroll padding for the
+  focus outline, and scrolling the activated tab into view fixes it. The
+  regression check reaches Service with the End key and verifies the focused
+  tab is fully visible.
 
 ## Accessibility findings and limits
 
