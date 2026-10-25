@@ -1,7 +1,8 @@
 # CKP-GUI-005 — Package stabilization and release readiness
 
-Status: release candidate prepared for review; not published, tagged, released,
-or merged.
+Status: private package contract prepared for review; public distribution and
+publication are not currently authorized. This PR is open and has not been
+merged; no tag or release was created.
 
 ## Baseline
 
@@ -26,8 +27,10 @@ metadata was still version `0.0.0`, marked private, and had no declared license.
 - Declare Node.js 22+ as the supported package tooling/runtime floor. CI checks
   Node 22 and 24; browser support is current evergreen Chromium, Firefox and
   WebKit as exercised by Playwright CI, without a promise about older releases.
-- Apply MIT as recommended. The initial author handle `jj-ervin` is used in the
-  notice; confirm the legal person/company name before first publication.
+- Retain MIT and use the owner-designated intended notice holder, `Osprey
+  Strategic Holdings LLC`. HBL Creative Studios is its development division.
+  The repository and package are private. Public distribution and publication
+  remain unauthorized; this setting does not change MIT's terms for recipients.
 - Keep runtime dependencies empty. `axe-core` and Playwright remain dev-only.
 - Restrict npm files to README, changelog, license, the public API contract, and
   `src/`. Private DEV-DOCS, demo, tests, workflows and internal reports are
@@ -63,17 +66,26 @@ On the feature branch after changes:
   tests, workflows, or private DEV-DOCS enter the tarball.
 - Existing CKP-GUI-004 interaction checks remain in the browser suite; no human
   or assistive-technology observations are claimed.
-- Hosted CI passed at `edfe637`: unit and package jobs on Node 22 and 24, and
-  browser proof in Chromium, Firefox and WebKit. The implementation commit
-  `22b0b45` also passed all hosted checks; `edfe637` only recorded these results.
+- Hosted CI passed at `da70d50e379c8791bc79edb0d1e6709872fa04c2`: unit/package
+  jobs on Node 22 and 24 and browser checks in Chromium, Firefox and WebKit.
+  Earlier hosted runs at `22b0b45` and `edfe637` also passed, but those runs do
+  not validate later package-private and legal-notice edits. Re-run hosted CI at
+  the updated PR head before treating those edits as CI-verified.
 
-First publication requires explicit owner approval that `jj-ervin` is the
-correct legal copyright holder (or a correction to the notice), confirmation of
-the MIT rights for all included code, the `0.1.0` changelog/version, public npm
-destination/access for `@cockpit/gui`, and the act of running
-`npm publish --access public`. A Git tag or GitHub release also requires its
-own explicit approval. This work does not publish, tag, create a GitHub
-release, merge, or migrate a consumer.
+The owner identified Osprey Strategic Holdings LLC as the intended holder and
+HBL Creative Studios as its development division. This instruction establishes
+the intended naming decision, but repository inspection did not locate an
+assignment or other rights-transfer record covering all contributions. The
+initial 8-line staged wrapper is documented as originating in
+`jj-ervin/cockpit`; subsequent history includes contributions by the GitHub
+account owner and must also be covered by an appropriate company ownership or
+license record. No such rights-transfer documentation was available in this
+repository. Legal chain of title remains unverified. MIT is retained as the
+declared license; it permits redistribution by recipients under its terms and
+is not a distribution-restricting license. Package privacy and the current
+owner decision mean this project does not authorize public distribution or
+publication. Any future change in that authorization must be explicit. No
+publication, tag, GitHub release, merge or consumer migration occurred here.
 
 ## Known limitations and residual risks
 
@@ -89,5 +101,6 @@ release, merge, or migrate a consumer.
 - CSS consumer loading depends on the consumer's bundler or CSS tooling.
 - UI approval is an interaction affordance; host/provider authorization and
   execution remain outside this package.
-- Copyright notice holder should be confirmed as an owner identity before
-  publication.
+- Company chain of title for the extracted wrapper and all contributions remains
+  unverified; no rights-transfer documentation was found in reviewed repository
+  records.

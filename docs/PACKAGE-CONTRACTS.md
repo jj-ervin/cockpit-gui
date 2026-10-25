@@ -1,8 +1,9 @@
 # Package API and compatibility contract
 
-Status: supported API proposal for `@cockpit/gui` `0.1.0`; package publication
-has not occurred. The npm `exports` map is the authority for package entry
-points. Files under `src/` that are not exported are implementation details.
+Status: supported API proposal for private `@cockpit/gui` `0.1.0`; public
+distribution and npm publication are not currently authorized. The npm
+`exports` map is the authority for package entry points. Files under `src/` that
+are not exported are implementation details.
 
 ## Supported entry points
 
@@ -164,8 +165,16 @@ physical touch and human usability checks remain open.
 
 ## Licensing
 
-The package candidate uses MIT with the repository's initial git author handle
-as the notice holder (`jj-ervin`). Confirm that this is the correct legal person
-or company before the first publication. The original extraction history is
-recorded in `docs/CKP-GUI-001.md`; its initial staged file was a small wrapper,
-and the current implementation is recorded as authored in this repository.
+The package's stated license is MIT. HBL Creative Studios is the development
+division of Osprey Strategic Holdings LLC, the intended copyright holder named
+in `LICENSE`. The repository's package-private setting controls registry
+publication workflow; it does not alter the permissions MIT grants to recipients
+of copies. Public distribution or publication is not currently authorized.
+
+The original extraction history is recorded in `docs/CKP-GUI-001.md`: the
+initial staged file was an eight-line wrapper from `jj-ervin/cockpit`, followed
+by later work recorded in this repository. Git author metadata and that history
+do not, by themselves, verify an assignment or other rights transfer to the LLC
+for every included contribution. Rights-transfer documents were not present in
+the reviewed repository records. Verify the chain of title, including the
+upstream-origin material and contributions, before approving public distribution.

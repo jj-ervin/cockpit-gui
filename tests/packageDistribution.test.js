@@ -46,6 +46,7 @@ test('packed package installs offline and exposes only the supported API', () =>
     const packed = JSON.parse(runNpm([
       'pack', '--json', '--pack-destination', packDir,
     ], projectRoot))[0];
+    assert.ok(packed.files.some(file => file.path === 'LICENSE'));
     assert.deepEqual(packed.files.map(file => file.path).sort(), allowedFiles);
     assert.equal(packed.bundled.length, 0);
 
@@ -59,7 +60,13 @@ test('packed package installs offline and exposes only the supported API', () =>
     const metadata = JSON.parse(fs.readFileSync(path.join(installedDir, 'package.json'), 'utf8'));
     assert.equal(metadata.name, '@cockpit/gui');
     assert.equal(metadata.version, '0.1.0');
+    assert.equal(metadata.private, true);
     assert.equal(metadata.license, 'MIT');
+    assert.equal(Object.hasOwn(metadata, 'publishConfig'), false);
+    assert.match(
+      fs.readFileSync(path.join(installedDir, 'LICENSE'), 'utf8'),
+      /Copyright \(c\) 2026 Osprey Strategic Holdings LLC\./,
+    );
     assert.deepEqual(metadata.dependencies || {}, {});
     assert.ok(!fs.existsSync(path.join(installedDir, 'node_modules', 'axe-core')));
     assert.ok(!fs.existsSync(path.join(installedDir, 'node_modules', 'playwright')));

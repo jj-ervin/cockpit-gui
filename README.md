@@ -4,20 +4,20 @@ Host-neutral GUI components for presenting command intents and workspace
 panels. The package is independently versioned and has no runtime dependencies
 on Cockpit Core, Cockpit Web, provider packages, or sibling repositories.
 
-**Release status:** the `0.1.0` package candidate is prepared, but it has not
-been published. Install from npm only after the owner approves and completes the
-first release. The MIT license is in [LICENSE](LICENSE); copyright notices must
-be retained when redistributing the package.
+**Distribution status:** this repository and npm package are private. Public
+distribution or publication is not currently authorized. The MIT license in
+[LICENSE](LICENSE) grants its stated permissions to recipients of the Software;
+private repository/package settings do not rewrite or restrict those license
+terms. HBL Creative Studios is the development division of Osprey Strategic
+Holdings LLC, the intended copyright holder named in the notice. The available
+repository records do not establish a complete rights-transfer chain for all
+extracted or contributed material; resolve that provenance before authorizing
+public distribution.
 
-## Install
+## Local package check
 
-After an approved public release:
-
-```sh
-npm install @cockpit/gui
-```
-
-To exercise the package from a local checkout without publishing:
+The package is private and npm publication is not currently authorized. To
+exercise a local packed copy without publishing:
 
 ```sh
 npm pack
@@ -102,6 +102,7 @@ minor release before removal, except when a security or legal issue requires
 faster action. Every release candidate must update [CHANGELOG.md](CHANGELOG.md).
 
 The supported exports and compatibility details are listed in
-[docs/PACKAGE-CONTRACTS.md](docs/PACKAGE-CONTRACTS.md). The repository's
+[docs/PACKAGE-CONTRACTS.md](docs/PACKAGE-CONTRACTS.md). HBL Creative Studios is
+the development division of Osprey Strategic Holdings LLC. The repository's
 extraction record and consumer migration gates are in
 [CKP-GUI-001](https://github.com/jj-ervin/cockpit-gui/blob/main/docs/CKP-GUI-001.md).
