@@ -63,7 +63,9 @@ On the feature branch after changes:
   tests, workflows, or private DEV-DOCS enter the tarball.
 - Existing CKP-GUI-004 interaction checks remain in the browser suite; no human
   or assistive-technology observations are claimed.
-- Hosted CI is pending the review PR.
+- Hosted CI passed at code commit `22b0b45`: unit and package jobs on Node 22
+  and 24, and browser proof in Chromium, Firefox and WebKit. The report-only
+  closeout commit that follows will receive its own CI run.
 
 First publication requires explicit owner approval that `jj-ervin` is the
 correct legal copyright holder (or a correction to the notice), confirmation of
