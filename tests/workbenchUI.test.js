@@ -11,6 +11,7 @@ function element() {
   const styles = new Map();
   return {
     children, attrs,
+    get firstChild() { return children[0] || null; },
     style: { setProperty(name, value) { styles.set(name, value); }, getPropertyValue(name) { return styles.get(name); } },
     classList: { add(name) { classes.add(name); }, contains(name) { return classes.has(name); } },
     setAttribute(k, v) { attrs[k] = String(v); },
