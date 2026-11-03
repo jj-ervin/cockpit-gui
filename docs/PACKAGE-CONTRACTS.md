@@ -12,6 +12,7 @@ are not exported are implementation details.
 | `@cockpit/gui` | `createCommandPaletteUI(options)` | Root compatibility entry and alias of the command palette factory. |
 | `@cockpit/gui/command-palette` | `createCommandPaletteUI(options)` | Explicit command palette entry. |
 | `@cockpit/gui/workspace` | `createWorkspaceUI(options)` | Workspace tabs and panel state presentation. |
+| `@cockpit/gui/workbench` | `createWorkbenchUI(options)` | Reusable workbench shell, activity rail and resizable side panels. |
 | `@cockpit/gui/styles.css` | CSS stylesheet | Shared component and responsive styles. |
 
 The JavaScript entry files use CommonJS exports in Node and expose the browser
@@ -139,6 +140,27 @@ tablist, linked tabs and tabpanels, roving tab focus, arrow keys, Home/End, and
 visible focus styling from the shared CSS entry. Loading uses `aria-busy`; error
 states use an alert; other status panels use a status role. The host owns item
 data and decides when to update panel state.
+
+## Workbench (CKP-GUI-007 candidate)
+
+`createWorkbenchUI(options)` takes the host-owned `document`, `layout`,
+`explorer`, `content`, and `context` elements. These elements remain owned
+by the consuming application; the workbench applies portable slot classes,
+creates an accessible activity rail and two resizable separators, and persists
+side-panel widths when the optional host `storage` adapter is provided.
+
+Optional `activities: [{id, label, glyph}]` customize the activity rail,
+`initialActivity` selects its initial state, `onActivity(id)` routes
+navigation back to the host, and `storageKey` namespaces local layout widths.
+Storage has the `getItem`/`setItem` interface and is injected; the workbench
+does not access global persistence services. The frozen API exposes
+`activate(id)` and `widths()`. ArrowLeft/ArrowRight resize the side panels
+from the focused separator, with Shift increasing the step.
+
+The workbench does **not** handle project files, document writes, application
+authorization, or AI provider access. Its initial version also does **not**
+claim completed split editors, drag-and-drop docking, or full UX acceptance.
+Those remain separate acceptance gates.
 
 ## Compatibility and deprecation
 
