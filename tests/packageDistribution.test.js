@@ -17,6 +17,7 @@ const allowedFiles = [
   'package.json',
   'src/cockpitGUI.css',
   'src/commandPaletteUI.js',
+  'src/workbenchUI.js',
   'src/workspaceUI.js',
 ].sort();
 
@@ -77,6 +78,9 @@ test('packed package installs offline and exposes only the supported API', () =>
       "assert.equal(typeof root, 'function');",
       "assert.equal(root, require('@cockpit/gui/command-palette'));",
       "assert.throws(() => root({}), /requires document/);",
+      "const createWorkbench = require('@cockpit/gui/workbench');",
+      "assert.equal(typeof createWorkbench, 'function');",
+      "assert.throws(() => createWorkbench({}), /requires document/);",
       "const createWorkspace = require('@cockpit/gui/workspace');",
       "assert.equal(typeof createWorkspace, 'function');",
       "assert.throws(() => createWorkspace({}), /requires document/);",
@@ -105,6 +109,8 @@ test('packed package installs offline and exposes only the supported API', () =>
       "import assert from 'node:assert/strict';",
       "import commandPalette from '@cockpit/gui';",
       "import workspace from '@cockpit/gui/workspace';",
+      "import workbench from '@cockpit/gui/workbench';",
+      "assert.equal(typeof workbench, 'function');",
       "assert.equal(typeof commandPalette, 'function');",
       "assert.equal(typeof workspace, 'function');",
     ].join('\n'));
@@ -113,6 +119,7 @@ test('packed package installs offline and exposes only the supported API', () =>
     for (const [file, globalName] of [
       ['src/commandPaletteUI.js', 'CockpitCommandPaletteUI'],
       ['src/workspaceUI.js', 'CockpitWorkspaceUI'],
+      ['src/workbenchUI.js', 'CockpitWorkbenchUI'],
     ]) {
       const browserGlobal = {};
       vm.runInNewContext(fs.readFileSync(path.join(installedDir, file), 'utf8'), {
