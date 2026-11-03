@@ -123,7 +123,7 @@
 
 
 /* CKP-GUI-007: reusable workbench shell. Host applications supply content. */
-.cockpit-workbench {
+.studio-layout.cockpit-workbench {
   --cockpit-explorer-width: 240px;
   --cockpit-context-width: 300px;
   display: grid;
@@ -169,17 +169,17 @@
 .cockpit-workbench__resize:hover, .cockpit-workbench__resize:focus { background: var(--cockpit-focus, #e6bc5b); }
 .cockpit-workbench__resize--left { grid-column: 3; }
 .cockpit-workbench__resize--right { grid-column: 5; }
-.cockpit-workbench.explorer-hidden { grid-template-columns: 48px minmax(0,1fr) 6px var(--cockpit-context-width); }
+.studio-layout.cockpit-workbench.explorer-hidden { grid-template-columns: 48px minmax(0,1fr) 6px var(--cockpit-context-width); }
 .cockpit-workbench.explorer-hidden > .studio-content { grid-column: 2; }
 .cockpit-workbench.explorer-hidden .cockpit-workbench__resize--left { display: none; }
 .cockpit-workbench.explorer-hidden .cockpit-workbench__resize--right { grid-column: 3; }
 .cockpit-workbench.explorer-hidden > .studio-context-rail { grid-column: 4; }
-.cockpit-workbench.context-hidden { grid-template-columns: 48px var(--cockpit-explorer-width) 6px minmax(0,1fr); }
+.studio-layout.cockpit-workbench.context-hidden { grid-template-columns: 48px var(--cockpit-explorer-width) 6px minmax(0,1fr); }
 .cockpit-workbench.context-hidden .cockpit-workbench__resize--right { display: none; }
-.cockpit-workbench.explorer-hidden.context-hidden { grid-template-columns: 48px minmax(0,1fr); }
+.studio-layout.cockpit-workbench.explorer-hidden.context-hidden { grid-template-columns: 48px minmax(0,1fr); }
 @media (max-width: 1050px) {
   .cockpit-workbench, .cockpit-workbench.explorer-hidden,
-  .cockpit-workbench.context-hidden, .cockpit-workbench.explorer-hidden.context-hidden {
+  .cockpit-workbench.context-hidden, .studio-layout.cockpit-workbench.explorer-hidden.context-hidden {
     grid-template-columns: 48px minmax(0,1fr);
     min-height: 0;
   }
