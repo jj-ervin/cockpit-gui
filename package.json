@@ -24,7 +24,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "test": "node --test tests/commandPaletteUI.test.js tests/workspaceUI.test.js",
+    "test": "node --test tests/commandPaletteUI.test.js tests/workspaceUI.test.js tests/workbenchUI.test.js",
     "test:browser": "node --test browser-tests/*.test.js",
     "test:package": "node --test tests/packageDistribution.test.js"
   },
