@@ -33,7 +33,8 @@
     ".": "./src/commandPaletteUI.js",
     "./command-palette": "./src/commandPaletteUI.js",
     "./workspace": "./src/workspaceUI.js",
-    "./styles.css": "./src/cockpitGUI.css"
+    "./styles.css": "./src/cockpitGUI.css",
+    "./workbench": "./src/workbenchUI.js"
   },
   "files": [
     "README.md",
