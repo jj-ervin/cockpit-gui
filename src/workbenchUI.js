@@ -28,6 +28,9 @@
     context: clamp(Number(previous.context) || 300, 220, 480)
   };
   layout.classList.add('cockpit-workbench');
+  c.explorer.classList.add('cockpit-workbench__explorer');
+  c.content.classList.add('cockpit-workbench__content');
+  c.context.classList.add('cockpit-workbench__context');
   const rail = doc.createElement('nav');
   rail.className = 'cockpit-workbench__activity';
   rail.setAttribute('aria-label', 'Workspace activities');
