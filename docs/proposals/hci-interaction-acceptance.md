@@ -59,3 +59,13 @@ This proposal covers the complete earlier GUI direction, not merely iconography.
 
 ### Visual acceptance before implementation
 For each target screen, approve a wireframe and representative visual reference, viewport and responsive expectations, component states, icon/label semantics, keyboard/touch contracts and usability task criteria. Test actual rendered output against the approved references; CI green alone does not establish usability or visual fidelity. Record evidence and deviations. This proposal does not assert that Cockpit GUI already meets these requirements.
+
+### Additional experience decisions to preserve
+The five experience outcomes are familiarity, predictability, user control, continuity, and recoverability. Validate them with declared people and tasks rather than assuming every user expects every pattern. Borrow learned behavior from file managers, browsers, document editors, messaging tools, and AI assistants without copying their branding or assets.
+
+- Keep notifications quiet and actionable. Explain where content is stored, what the assistant can access, what changed, and whether an operation or save succeeded.
+- Restore work in a device-appropriate way: desktop can prioritize multitasking; narrow/mobile views can prioritize conversation, review, capture, and quick action.
+- Offer useful defaults plus remembered theme, density, font-scale, and layout preferences where supported; configuration should not be required for first use.
+- Map each action to its icon, visible label, tooltip/help text, accessible name, and expected pointer, keyboard, and touch behavior. Include disabled and destructive states. Test ambiguous and specialized glyphs with representative users.
+- Candidate action vocabulary includes Home, Search, Menu, Settings, Folder, File, Add, Edit, Save, Delete, Download, Upload, Back, Forward, Refresh, Close, Sidebar, Split view, More, Filter, Help, Alerts, Account, Attach, Undo, Redo, Copy, Confirm, Run, Stop, Preview, and Open link. This is a semantic inventory, not a required icon package. Lucide was suggested as one possible coherent family, not mandated.
+- Evaluate actual tasks for completion, confusion, error rate, icon recognition, and recovery. Expert review, automated checks, participant observation, and owner visual approval are distinct evidence types.
