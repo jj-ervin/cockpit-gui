@@ -31,3 +31,31 @@ Record target users and tasks, navigation model, wireframes, approved viewport r
 
 ## Governance integration
 Align with the eventual adopted HCI/A11Y standard through DCP/DXP. Do not declare conformance until requirements and evidence are actually verified.
+
+## Full workspace design baseline
+This proposal covers the complete earlier GUI direction, not merely iconography.
+
+### Five-region shell
+1. Global navigation: Home, Projects, Conversations, Search, Activity and Settings with understandable labels.
+2. Explorer/organizer: folders, files, tasks, conversations, sources and artifacts; friendly project overview or advanced tree view.
+3. Primary workspace: conversation, document/code editor, visual preview, research surface or dashboard; the content area dominates.
+4. Optional contextual panel: assistant, selected-item details, references, task progress and properties; hide when not useful.
+5. Restrained status feedback: save, connection, running tasks, errors, recovery and approval needs.
+
+### Essential interaction and experience patterns
+- Browser-like reorderable tabs, back/forward, breadcrumbs, recent items and persistent workspace restoration.
+- Explorer selection, context menus, search, drag/drop, split view, resize, undo/redo and keyboard shortcuts.
+- Natural-language conversation as a universal entry point, with attachment support and artifact-adjacent assistance; never remove direct editing.
+- Inspectable AI actions, clear permissions, visible progress, pause/stop, diff/review and reversibility where supported.
+- Progressive complexity: simple onboarding, standard project work and optional advanced editor/terminal/agent features; no rigid user tiers.
+- Multiple appropriate project views (list, board, calendar, timeline, document) when needed, without duplicating data.
+- Calm professional hierarchy, typography, spacing, icon consistency, light/dark themes and responsive, device-appropriate layout.
+- Inclusive interaction: accessible labels, focus/keyboard, screen readers, contrast, scalable text and reduced motion.
+
+### Prioritized feature tiers
+**Initial baseline:** familiar navigation/explorer; tabs/restoration; conversational input; search/contextual actions; autosave/undo/recovery; resizable panels/split views; artifact preview; visible AI progress/approvals.
+**Subsequent:** alternative project views, advanced personalization.
+**Optional specialization:** terminal, Git/source control, multi-agent orchestration, extensions.
+
+### Visual acceptance before implementation
+For each target screen, approve a wireframe and representative visual reference, viewport and responsive expectations, component states, icon/label semantics, keyboard/touch contracts and usability task criteria. Test actual rendered output against the approved references; CI green alone does not establish usability or visual fidelity. Record evidence and deviations. This proposal does not assert that Cockpit GUI already meets these requirements.
