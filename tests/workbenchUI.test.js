@@ -13,7 +13,7 @@ function element() {
     children, attrs, dataset: {},
     get firstChild() { return children[0] || null; },
     style: { setProperty(name, value) { styles.set(name, value); }, getPropertyValue(name) { return styles.get(name); } },
-    classList: { add(name) { classes.add(name); }, contains(name) { return classes.has(name); } },
+    classList: { add(name) { classes.add(name); }, remove(name) { classes.delete(name); }, contains(name) { return classes.has(name); } },
     setAttribute(k, v) { attrs[k] = String(v); },
     removeAttribute(k) { delete attrs[k]; },
     addEventListener(k, fn) { handlers.set(k, fn); },
@@ -52,4 +52,29 @@ test('workbench mounts reusable activity rail, panels, accessible resize control
   assert.equal(JSON.parse(saved.get('cockpit-workbench-layout-v1')).explorer, 256);
   ui.activate('none');
   assert.equal(button.attrs['aria-current'], undefined);
+});
+
+
+test('workbench panels can be collapsed and restored independently without losing host content', () => {
+  const layout = element(), explorer = element(), content = element(), context = element();
+  layout.appendChild(explorer); layout.appendChild(content); layout.appendChild(context);
+  const doc = { createElement: element };
+  const ui = createWorkbenchUI({ document: doc, layout, explorer, content, context });
+  assert.equal(ui.panelVisible('explorer'), true);
+  assert.equal(ui.panelVisible('context'), true);
+  assert.equal(ui.setPanelVisible('explorer', false), false);
+  assert.equal(explorer.hidden, true);
+  assert.equal(layout.classList.contains('explorer-hidden'), true);
+  assert.equal(content.hidden, undefined);
+  ui.setPanelVisible('context', false);
+  assert.equal(context.hidden, true);
+  assert.equal(layout.classList.contains('context-hidden'), true);
+  ui.setPanelVisible('explorer', true);
+  ui.setPanelVisible('context', true);
+  assert.equal(explorer.hidden, false);
+  assert.equal(context.hidden, false);
+  assert.equal(layout.classList.contains('explorer-hidden'), false);
+  assert.equal(layout.classList.contains('context-hidden'), false);
+  assert.throws(() => ui.panelVisible('wrong'), /Unknown workbench panel/);
+  assert.throws(() => ui.setPanelVisible('wrong', false), /Unknown workbench panel/);
 });
