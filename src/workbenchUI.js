@@ -114,7 +114,27 @@
       else button.removeAttribute('aria-current');
     });
   }
+  // Visibility is presentation-only: hosts retain ownership of panel content.
+  const visibility = { explorer: true, context: true };
+  function setPanelVisible(panel, visible) {
+    if (panel !== 'explorer' && panel !== 'context') throw new TypeError('Unknown workbench panel');
+    const element = panel === 'explorer' ? c.explorer : c.context;
+    const next = Boolean(visible);
+    visibility[panel] = next;
+    element.hidden = !next;
+    layout.classList[next ? 'remove' : 'add'](panel + '-hidden');
+    return next;
+  }
+  function panelVisible(panel) {
+    if (panel !== 'explorer' && panel !== 'context') throw new TypeError('Unknown workbench panel');
+    return visibility[panel];
+  }
   apply();
   activate(c.initialActivity || 'project');
-  return Object.freeze({ activate: activate, widths: function () { return Object.assign({}, widths); } });
+  return Object.freeze({
+    activate: activate,
+    widths: function () { return Object.assign({}, widths); },
+    setPanelVisible: setPanelVisible,
+    panelVisible: panelVisible
+  });
 }));
