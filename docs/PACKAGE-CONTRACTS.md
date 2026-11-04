@@ -153,9 +153,7 @@ Optional `activities: [{id, label, glyph}]` customize the activity rail,
 `initialActivity` selects its initial state, `onActivity(id)` routes
 navigation back to the host, and `storageKey` namespaces local layout widths.
 Storage has the `getItem`/`setItem` interface and is injected; the workbench
-does not access global persistence services. The frozen API exposes
-`activate(id)` and `widths()`. ArrowLeft/ArrowRight resize the side panels
-from the focused separator, with Shift increasing the step.
+does not access global persistence services. The frozen API exposes `activate(id)`, `widths()`, `setPanelVisible('explorer'|'context', boolean)`, and `panelVisible('explorer'|'context')`. Hosts own the controls that invoke panel visibility; hiding a panel does not dispose its content. ArrowLeft/ArrowRight resize the side panels from the focused separator, with Shift increasing the step. Panel widths, but not visibility, are persisted by the optional storage adapter.
 
 The workbench does **not** handle project files, document writes, application
 authorization, or AI provider access. Its initial version also does **not**
