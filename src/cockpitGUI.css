@@ -169,6 +169,10 @@
 .cockpit-workbench__resize:hover, .cockpit-workbench__resize:focus { background: var(--cockpit-focus, #e6bc5b); }
 .cockpit-workbench__resize--left { grid-column: 3; }
 .cockpit-workbench__resize--right { grid-column: 5; }
+.cockpit-workbench > .cockpit-workbench__explorer[hidden],
+.cockpit-workbench > .cockpit-workbench__context[hidden] { display: none; }
+.cockpit-workbench.explorer-hidden.context-hidden > .cockpit-workbench__content { grid-column: 2; }
+
 .cockpit-workbench.explorer-hidden { grid-template-columns: 48px minmax(0,1fr) 6px var(--cockpit-context-width); }
 .cockpit-workbench.explorer-hidden > .cockpit-workbench__content { grid-column: 2; }
 .cockpit-workbench.explorer-hidden .cockpit-workbench__resize--left { display: none; }
