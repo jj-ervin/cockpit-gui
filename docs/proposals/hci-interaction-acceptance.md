@@ -1,6 +1,6 @@
-# Cockpit GUI human-centered interaction acceptance — proposal
+# Cockpit GUI human-centered interaction and visual acceptance — project baseline
 
-Status: PROPOSED. This is a consumer implementation profile, not an independent governance standard.
+Status: ADOPTED AS COCKPIT GUI PROJECT GUIDANCE. These requirements guide workbench implementation now; no RFC, outside standard, DCP/DXP reconciliation, or additional approval process is required to proceed. This is not a claim of conformance to any external standard.
 
 ## Experience contract
 A welcoming conversational workspace combining familiar desktop navigation and direct manipulation with optional professional tools. Preserve application independence and avoid forced coupling to other products.
@@ -29,11 +29,11 @@ Record target users and tasks, navigation model, wireframes, approved viewport r
 - Real user task tests: navigation comprehension, project opening, artifact editing, AI change review, return-to-work continuity.
 - Document deviations; do not equate green CI with visual or usability acceptance.
 
-## Governance integration
-Align with the eventual adopted HCI/A11Y standard through DCP/DXP. Do not declare conformance until requirements and evidence are actually verified.
+## External standards
+Future Governance Commons HCI/A11Y work and DCP/DXP integration are optional, independent efforts. They do not gate Cockpit GUI design, implementation, testing, release, or project-level acceptance. Any external conformance claim requires separate evidence.
 
 ## Full workspace design baseline
-This proposal covers the complete earlier GUI direction, not merely iconography.
+This baseline covers the complete earlier GUI direction, not merely iconography.
 
 ### Five-region shell
 1. Global navigation: Home, Projects, Conversations, Search, Activity and Settings with understandable labels.
@@ -58,7 +58,7 @@ This proposal covers the complete earlier GUI direction, not merely iconography.
 **Optional specialization:** terminal, Git/source control, multi-agent orchestration, extensions.
 
 ### Visual acceptance before implementation
-For each target screen, approve a wireframe and representative visual reference, viewport and responsive expectations, component states, icon/label semantics, keyboard/touch contracts and usability task criteria. Test actual rendered output against the approved references; CI green alone does not establish usability or visual fidelity. Record evidence and deviations. This proposal does not assert that Cockpit GUI already meets these requirements.
+For each target screen, approve a wireframe and representative visual reference, viewport and responsive expectations, component states, icon/label semantics, keyboard/touch contracts and usability task criteria. Test actual rendered output against the approved references; CI green alone does not establish usability or visual fidelity. Record evidence and deviations. Adoption of this baseline does not assert that Cockpit GUI already meets these requirements.
 
 ### Additional experience decisions to preserve
 The five experience outcomes are familiarity, predictability, user control, continuity, and recoverability. Validate them with declared people and tasks rather than assuming every user expects every pattern. Borrow learned behavior from file managers, browsers, document editors, messaging tools, and AI assistants without copying their branding or assets.
