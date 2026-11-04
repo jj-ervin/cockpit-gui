@@ -8,6 +8,8 @@ Cockpit GUI is the reusable, accessible, friendly, VS Code-inspired workbench ad
 A person should recognize how to switch activities, browse projects, open documents, work in editors, use an assistant, and recover their layout without reading architecture documentation.
 
 ## Reference and evidence
+The [dated proposed workbench reference set](reference-screens/ACCEPTANCE-MATRIX.md) provides desktop, AI change-review and narrow concept screens plus a behavior matrix. Owner visual approval and all running-implementation evidence are pending.
+
 Before a visual acceptance decision, attach a dated reference capture/mockup that the owner explicitly approves, plus current screenshots **of the running implementation** at 1440×900 and 1280×800, and a narrow 390×844 viewport. Attach the source commit, browser engine and zoom, screenshots or recordings, test commands, reviewer and date. A screenshot generated from a concept is not implementation evidence.
 
 Review each screenshot side by side with the approved reference. Changes in composition, major region hierarchy, visual density, typography, color and behavior require a recorded explanation; do not infer approval from passing automated tests.
