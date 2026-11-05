@@ -4,6 +4,13 @@ Notable user-facing changes are recorded here. Entries remain Unreleased. The
 repository and package are private; public distribution or publication is not
 currently authorized.
 
+## [0.1.3] - Unreleased private candidate
+
+- Add an optional independent bottom workbench slot with its own visibility, height,
+  keyboard/pointer separator and saved layout state. Side conversation stays in place.
+- Preserve legacy context-bottom layouts for hosts without a bottom slot and migrate
+  saved bottom-docked context to the separate slot when a host adopts it.
+
 ## [0.1.2] - Unreleased private candidate
 
 - Let hosts swap the context and explorer side panes, while retaining right and

@@ -28,15 +28,19 @@
     context: clamp(Number(previous.context) || 300, 220, 480)
   };
   let contextHeight = clamp(Number(previous.contextHeight) || 240, 160, 480);
+  let bottomHeight = clamp(Number(previous.bottomHeight) || Number(previous.contextHeight) || 240, 160, 480);
   let contextDock = ['left', 'right', 'bottom'].includes(previous.contextDock) ? previous.contextDock : 'right';
+  if (c.bottom && contextDock === 'bottom') contextDock = 'right';
   const visibility = {
     explorer: previous.explorerVisible !== false,
-    context: previous.contextVisible !== false
+    context: previous.contextVisible !== false,
+    bottom: Boolean(c.bottom && (previous.bottomVisible === true || previous.contextDock === 'bottom'))
   };
   layout.classList.add('cockpit-workbench');
   c.explorer.classList.add('cockpit-workbench__explorer');
   c.content.classList.add('cockpit-workbench__content');
   c.context.classList.add('cockpit-workbench__context');
+  if (c.bottom) c.bottom.classList.add('cockpit-workbench__bottom');
   const rail = doc.createElement('nav');
   rail.className = 'cockpit-workbench__activity';
   rail.setAttribute('aria-label', 'Workspace activities');
@@ -61,18 +65,25 @@
   layout.insertBefore(rail, layout.firstChild);
   function persist() {
     try { if (storage) storage.setItem(storageKey, JSON.stringify({
-      ...widths, contextHeight, contextDock,
-      explorerVisible: visibility.explorer, contextVisible: visibility.context
+      ...widths, contextHeight, bottomHeight, contextDock,
+      explorerVisible: visibility.explorer, contextVisible: visibility.context,
+      ...(c.bottom ? {bottomVisible: visibility.bottom} : {})
     })); } catch {}
   }
   function apply() {
     layout.style.setProperty('--cockpit-explorer-width', widths.explorer + 'px');
     layout.style.setProperty('--cockpit-context-width', widths.context + 'px');
     layout.style.setProperty('--cockpit-context-height', contextHeight + 'px');
+    if (c.bottom) layout.style.setProperty('--cockpit-bottom-height', bottomHeight + 'px');
     layout.classList[contextDock === 'bottom' ? 'add' : 'remove']('context-bottom');
     layout.classList[contextDock === 'left' ? 'add' : 'remove']('context-left');
     c.explorer.hidden = !visibility.explorer;
     c.context.hidden = !visibility.context;
+    if (c.bottom) {
+      c.bottom.hidden = !visibility.bottom;
+      bottomGrip.hidden = !visibility.bottom;
+      layout.classList[visibility.bottom ? 'add' : 'remove']('has-bottom');
+    }
     layout.classList[visibility.explorer ? 'remove' : 'add']('explorer-hidden');
     layout.classList[visibility.context ? 'remove' : 'add']('context-hidden');
   }
@@ -135,6 +146,44 @@
   }
   const left = addResize(c.content, 'left', 'Explorer');
   const right = addResize(c.context, 'right', 'Context');
+  let bottomGrip = null;
+  if (c.bottom) {
+    bottomGrip = doc.createElement('div');
+    bottomGrip.className = 'cockpit-workbench__resize--bottom';
+    bottomGrip.tabIndex = 0;
+    bottomGrip.setAttribute('role', 'separator');
+    bottomGrip.setAttribute('aria-label', 'Resize bottom panel');
+    bottomGrip.setAttribute('aria-orientation', 'horizontal');
+    bottomGrip.setAttribute('aria-valuemin', '160');
+    bottomGrip.setAttribute('aria-valuemax', '480');
+    bottomGrip.setAttribute('aria-valuenow', String(bottomHeight));
+    function updateBottom(value) {
+      bottomHeight = clamp(Math.round(value), 160, 480);
+      bottomGrip.setAttribute('aria-valuenow', String(bottomHeight));
+      apply(); persist();
+    }
+    bottomGrip.addEventListener('keydown', function (event) {
+      if (!['ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
+      updateBottom(event.key === 'Home' ? 160 : event.key === 'End' ? 480 : bottomHeight + (event.key === 'ArrowUp' ? 16 : -16));
+    });
+    bottomGrip.addEventListener('pointerdown', function (event) {
+      if (event.button !== 0) return;
+      event.preventDefault();
+      const startY = event.clientY, startHeight = bottomHeight;
+      bottomGrip.setPointerCapture(event.pointerId);
+      function move(e) { updateBottom(startHeight + startY - e.clientY); }
+      function stop() {
+        bottomGrip.removeEventListener('pointermove', move);
+        bottomGrip.removeEventListener('pointerup', stop);
+        bottomGrip.removeEventListener('pointercancel', stop);
+      }
+      bottomGrip.addEventListener('pointermove', move);
+      bottomGrip.addEventListener('pointerup', stop);
+      bottomGrip.addEventListener('pointercancel', stop);
+    });
+    layout.insertBefore(bottomGrip, c.bottom);
+  }
   function activate(id) {
     activityButtons.forEach(function (button, key) {
       if (key === id) button.setAttribute('aria-current', 'page');
@@ -143,21 +192,22 @@
   }
   // The host keeps the panel content; the workbench persists only its layout.
   function setPanelVisible(panel, visible) {
-    if (panel !== 'explorer' && panel !== 'context') throw new TypeError('Unknown workbench panel');
-    const element = panel === 'explorer' ? c.explorer : c.context;
+    if (panel !== 'explorer' && panel !== 'context' && !(panel === 'bottom' && c.bottom)) throw new TypeError('Unknown workbench panel');
+    const element = panel === 'explorer' ? c.explorer : panel === 'context' ? c.context : c.bottom;
     const next = Boolean(visible);
     visibility[panel] = next;
     element.hidden = !next;
-    layout.classList[next ? 'remove' : 'add'](panel + '-hidden');
+    if (panel === 'bottom') { bottomGrip.hidden = !next; layout.classList[next ? 'add' : 'remove']('has-bottom'); }
+    else layout.classList[next ? 'remove' : 'add'](panel + '-hidden');
     persist();
     return next;
   }
   function panelVisible(panel) {
-    if (panel !== 'explorer' && panel !== 'context') throw new TypeError('Unknown workbench panel');
+    if (panel !== 'explorer' && panel !== 'context' && !(panel === 'bottom' && c.bottom)) throw new TypeError('Unknown workbench panel');
     return visibility[panel];
   }
   function dockContext(position) {
-    if (position !== 'left' && position !== 'right' && position !== 'bottom') throw new TypeError('Unknown context dock');
+    if (position !== 'left' && position !== 'right' && (position !== 'bottom' || c.bottom)) throw new TypeError('Unknown context dock');
     contextDock = position;
     left.setAttribute('aria-label', position === 'left' ? 'Resize Context panel' : 'Resize Explorer panel');
     left.setAttribute('aria-valuemin', String(position === 'left' ? 220 : 180));
@@ -173,9 +223,10 @@
   }
   function resetLayout() {
     widths.explorer = 240; widths.context = 300; contextHeight = 240;
-    visibility.explorer = true; visibility.context = true;
+    visibility.explorer = true; visibility.context = true; visibility.bottom = false; bottomHeight = 240;
     left.setAttribute('aria-valuenow', '240');
     dockContext('right');
+    apply();
     persist();
   }
   apply();
@@ -188,6 +239,14 @@
     panelVisible: panelVisible,
     dockContext: dockContext,
     contextDock: function () { return contextDock; },
+    bottomHeight: function () { return c.bottom ? bottomHeight : null; },
+    setBottomHeight: function (height) {
+      if (!c.bottom || !Number.isFinite(height)) throw new TypeError('Bottom panel and finite height required');
+      bottomHeight = clamp(Math.round(height), 160, 480);
+      bottomGrip.setAttribute('aria-valuenow', String(bottomHeight));
+      apply(); persist();
+      return bottomHeight;
+    },
     resetLayout: resetLayout
   });
 }));

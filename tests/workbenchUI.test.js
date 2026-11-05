@@ -112,3 +112,34 @@ test('context docks to bottom, resizes by keyboard, restores from storage and re
   assert.equal(swapped.ui.contextDock(), 'right');
   assert.throws(() => second.ui.dockContext('floating'), /Unknown context dock/);
 });
+
+test('optional bottom slot stays independent of side context and persists its own height', () => {
+  const saved = new Map();
+  const storage = {getItem: key => saved.get(key), setItem: (key,value) => saved.set(key,value)};
+  function mount() {
+    const layout = element(), explorer = element(), content = element(), context = element(), bottom = element();
+    layout.appendChild(explorer); layout.appendChild(content); layout.appendChild(context); layout.appendChild(bottom);
+    return {layout, context, bottom, ui:createWorkbenchUI({document:{createElement:element},layout,explorer,content,context,bottom,storage})};
+  }
+  const first = mount();
+  assert.equal(first.ui.panelVisible('bottom'), false);
+  first.ui.setPanelVisible('bottom', true);
+  assert.equal(first.ui.panelVisible('context'), true);
+  assert.equal(first.context.hidden, false);
+  assert.equal(first.layout.classList.contains('has-bottom'), true);
+  const grip = first.layout.children.find(child => child.attrs['aria-label'] === 'Resize bottom panel');
+  assert.equal(grip.attrs['aria-orientation'], 'horizontal');
+  grip.fire('keydown',{key:'ArrowUp'});
+  assert.equal(first.ui.bottomHeight(), 256);
+  first.ui.setPanelVisible('context',false);
+  assert.equal(first.ui.panelVisible('bottom'),true);
+  const second = mount();
+  assert.equal(second.ui.panelVisible('bottom'),true);
+  assert.equal(second.ui.panelVisible('context'),false);
+  assert.equal(second.ui.bottomHeight(),256);
+  assert.throws(() => second.ui.dockContext('bottom'), /Unknown context dock/);
+  second.ui.resetLayout();
+  assert.equal(second.ui.panelVisible('bottom'),false);
+  assert.equal(second.ui.panelVisible('context'),true);
+  assert.equal(second.ui.bottomHeight(),240);
+});
