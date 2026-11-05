@@ -4,6 +4,25 @@ Notable user-facing changes are recorded here. Entries remain Unreleased. The
 repository and package are private; public distribution or publication is not
 currently authorized.
 
+## [0.1.3] - Unreleased private candidate
+
+- Add an optional independent bottom workbench slot with its own visibility, height,
+  keyboard/pointer separator and saved layout state. Side conversation stays in place.
+- Preserve legacy context-bottom layouts for hosts without a bottom slot and migrate
+  saved bottom-docked context to the separate slot when a host adopts it.
+
+## [0.1.2] - Unreleased private candidate
+
+- Let hosts swap the context and explorer side panes, while retaining right and
+  bottom docking, resize controls, visibility and saved layouts.
+
+## [0.1.1] - Unreleased private candidate
+
+- Add optional right/bottom context docking, keyboard/pointer resizing, saved
+  panel visibility and layout reset to the workbench API.
+- Keep host-owned panel content and authorization boundaries intact. No package
+  publication, tag, or release is implied.
+
 ## [0.1.0] - Unreleased
 
 - Add the CKP-GUI-006 controlled consumer-pilot evidence and repeatable private

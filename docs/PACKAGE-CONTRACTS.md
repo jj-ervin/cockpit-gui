@@ -1,6 +1,6 @@
 # Package API and compatibility contract
 
-Status: supported API proposal for private `@cockpit/gui` `0.1.0`; public
+Status: supported API baseline for private `@cockpit/gui` `0.1.0`; additive `0.1.3` candidate; public
 distribution and npm publication are not currently authorized. The npm
 `exports` map is the authority for package entry points. Files under `src/` that
 are not exported are implementation details.
@@ -12,6 +12,7 @@ are not exported are implementation details.
 | `@cockpit/gui` | `createCommandPaletteUI(options)` | Root compatibility entry and alias of the command palette factory. |
 | `@cockpit/gui/command-palette` | `createCommandPaletteUI(options)` | Explicit command palette entry. |
 | `@cockpit/gui/workspace` | `createWorkspaceUI(options)` | Workspace tabs and panel state presentation. |
+| `@cockpit/gui/workbench` | `createWorkbenchUI(options)` | Reusable workbench shell, activity rail and resizable side panels. |
 | `@cockpit/gui/styles.css` | CSS stylesheet | Shared component and responsive styles. |
 
 The JavaScript entry files use CommonJS exports in Node and expose the browser
@@ -139,6 +140,31 @@ tablist, linked tabs and tabpanels, roving tab focus, arrow keys, Home/End, and
 visible focus styling from the shared CSS entry. Loading uses `aria-busy`; error
 states use an alert; other status panels use a status role. The host owns item
 data and decides when to update panel state.
+
+## Workbench (CKP-GUI-007 candidate)
+
+`createWorkbenchUI(options)` takes the host-owned `document`, `layout`,
+`explorer`, `content`, and `context` elements. These elements remain owned
+by the consuming application; the workbench applies portable slot classes,
+creates an accessible activity rail and two resizable separators, and persists
+side-panel widths when the optional host `storage` adapter is provided.
+
+Optional `activities: [{id, label, glyph}]` customize the activity rail,
+`initialActivity` selects its initial state, `onActivity(id)` routes
+navigation back to the host, and `storageKey` namespaces local layout widths.
+Storage has the `getItem`/`setItem` interface and is injected; the workbench
+does not access global persistence services. The frozen API exposes `activate(id)`, `widths()`, `setPanelVisible('explorer'|'context', boolean)`, and `panelVisible('explorer'|'context')`. Hosts own the controls that invoke panel visibility; hiding a panel does not dispose its content. ArrowLeft/ArrowRight resize the side panels from the focused separator, with Shift increasing the step.
+
+The additive `0.1.1` candidate also exposes `dockContext('right'|'bottom')`, `contextDock()`, and `resetLayout()`. A bottom-docked context uses the same host-owned element. Its focused separator uses ArrowUp/ArrowDown (Shift for a larger step), or pointer drag, to resize height. Widths, bottom height, context position and both panel visibility values persist through the optional storage adapter. Existing width-only saved objects remain readable. Reset restores right docking, visible panels and default dimensions. These methods affect presentation only; no content is copied, executed or detached into a new window.
+
+The additive `0.1.2` candidate accepts `dockContext('left')`. Left placement swaps the context and explorer side panes, preserving each pane's host-owned content and saved visibility. Both separators resize the panel they border and expose the correct accessible name and range. This does not create arbitrary panel slots, drag docking, or external-window capability.
+
+The additive `0.1.3` candidate accepts an optional host-owned `bottom` element. When supplied, `setPanelVisible('bottom', boolean)`, `panelVisible('bottom')`, `bottomHeight()` and `setBottomHeight(pixels)` control an independent bottom slot. A separate horizontal separator supports ArrowUp/ArrowDown and pointer resizing; bottom visibility and height persist with the existing layout storage key. Reset hides bottom and restores its default height. The side `context` stays independent and can still swap left/right. A previously saved bottom-docked context is normalized to right placement with bottom visible; `dockContext('bottom')` is unavailable when the separate bottom slot is supplied. Hosts without `bottom` retain the earlier context-bottom API and layout behavior.
+
+The workbench does **not** handle project files, document writes, application
+authorization, or AI provider access. Its initial version also does **not**
+claim completed split editors, drag-and-drop docking, or full UX acceptance.
+Those remain separate acceptance gates.
 
 ## Compatibility and deprecation
 

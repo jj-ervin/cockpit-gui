@@ -23,4 +23,5 @@ jobs:
       - run: npm run test:package
       - run: node --check src/commandPaletteUI.js
       - run: node --check src/workspaceUI.js
+      - run: node --check src/workbenchUI.js
       - run: node --check demo/app.js
