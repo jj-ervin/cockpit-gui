@@ -27,6 +27,12 @@
     explorer: clamp(Number(previous.explorer) || 240, 180, 420),
     context: clamp(Number(previous.context) || 300, 220, 480)
   };
+  let contextHeight = clamp(Number(previous.contextHeight) || 240, 160, 480);
+  let contextDock = previous.contextDock === 'bottom' ? 'bottom' : 'right';
+  const visibility = {
+    explorer: previous.explorerVisible !== false,
+    context: previous.contextVisible !== false
+  };
   layout.classList.add('cockpit-workbench');
   c.explorer.classList.add('cockpit-workbench__explorer');
   c.content.classList.add('cockpit-workbench__content');
@@ -54,11 +60,20 @@
   });
   layout.insertBefore(rail, layout.firstChild);
   function persist() {
-    try { if (storage) storage.setItem(storageKey, JSON.stringify(widths)); } catch {}
+    try { if (storage) storage.setItem(storageKey, JSON.stringify({
+      ...widths, contextHeight, contextDock,
+      explorerVisible: visibility.explorer, contextVisible: visibility.context
+    })); } catch {}
   }
   function apply() {
     layout.style.setProperty('--cockpit-explorer-width', widths.explorer + 'px');
     layout.style.setProperty('--cockpit-context-width', widths.context + 'px');
+    layout.style.setProperty('--cockpit-context-height', contextHeight + 'px');
+    layout.classList[contextDock === 'bottom' ? 'add' : 'remove']('context-bottom');
+    c.explorer.hidden = !visibility.explorer;
+    c.context.hidden = !visibility.context;
+    layout.classList[visibility.explorer ? 'remove' : 'add']('explorer-hidden');
+    layout.classList[visibility.context ? 'remove' : 'add']('context-hidden');
   }
   function addResize(before, side, name) {
     const grip = doc.createElement('div');
@@ -71,13 +86,20 @@
     grip.setAttribute('aria-valuemax', String(side === 'left' ? 420 : 480));
     function update(delta) {
       const key = side === 'left' ? 'explorer' : 'context';
-      widths[key] = clamp(widths[key] + delta, key === 'explorer' ? 180 : 220, key === 'explorer' ? 420 : 480);
-      grip.setAttribute('aria-valuenow', String(widths[key]));
+      if (side === 'right' && contextDock === 'bottom') contextHeight = clamp(contextHeight - delta, 160, 480);
+      else widths[key] = clamp(widths[key] + delta, key === 'explorer' ? 180 : 220, key === 'explorer' ? 420 : 480);
+      grip.setAttribute('aria-valuenow', String(side === 'right' && contextDock === 'bottom' ? contextHeight : widths[key]));
       apply(); persist();
     }
     grip.setAttribute('aria-valuenow', String(widths[side === 'left' ? 'explorer' : 'context']));
     grip.addEventListener('keydown', function (event) {
+      if (side === 'right' && contextDock === 'bottom' && (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+        event.preventDefault();
+        update((event.key === 'ArrowDown' ? 1 : -1) * (event.shiftKey ? 40 : 16));
+        return;
+      }
       if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        if (side === 'right' && contextDock === 'bottom') return;
         event.preventDefault();
         const dir = event.key === 'ArrowRight' ? 1 : -1;
         update((side === 'right' ? -dir : dir) * (event.shiftKey ? 40 : 16));
@@ -85,13 +107,16 @@
     });
     grip.addEventListener('pointerdown', function (event) {
       if (event.button !== 0) return;
-      const start = event.clientX, initial = widths[side === 'left' ? 'explorer' : 'context'];
+      const bottom = side === 'right' && contextDock === 'bottom';
+      const start = bottom ? event.clientY : event.clientX;
+      const initial = bottom ? contextHeight : widths[side === 'left' ? 'explorer' : 'context'];
       grip.setPointerCapture(event.pointerId);
       function move(e) {
         const key = side === 'left' ? 'explorer' : 'context';
-        widths[key] = clamp(initial + (side === 'left' ? 1 : -1) * (e.clientX - start),
+        if (bottom) contextHeight = clamp(initial - (e.clientY - start), 160, 480);
+        else widths[key] = clamp(initial + (side === 'left' ? 1 : -1) * (e.clientX - start),
           key === 'explorer' ? 180 : 220, key === 'explorer' ? 420 : 480);
-        grip.setAttribute('aria-valuenow', String(widths[key])); apply();
+        grip.setAttribute('aria-valuenow', String(bottom ? contextHeight : widths[key])); apply();
       }
       function stop() {
         grip.removeEventListener('pointermove', move);
@@ -114,8 +139,7 @@
       else button.removeAttribute('aria-current');
     });
   }
-  // Visibility is presentation-only: hosts retain ownership of panel content.
-  const visibility = { explorer: true, context: true };
+  // The host keeps the panel content; the workbench persists only its layout.
   function setPanelVisible(panel, visible) {
     if (panel !== 'explorer' && panel !== 'context') throw new TypeError('Unknown workbench panel');
     const element = panel === 'explorer' ? c.explorer : c.context;
@@ -123,18 +147,41 @@
     visibility[panel] = next;
     element.hidden = !next;
     layout.classList[next ? 'remove' : 'add'](panel + '-hidden');
+    persist();
     return next;
   }
   function panelVisible(panel) {
     if (panel !== 'explorer' && panel !== 'context') throw new TypeError('Unknown workbench panel');
     return visibility[panel];
   }
+  function dockContext(position) {
+    if (position !== 'right' && position !== 'bottom') throw new TypeError('Unknown context dock');
+    contextDock = position;
+    right.setAttribute('aria-orientation', position === 'bottom' ? 'horizontal' : 'vertical');
+    right.setAttribute('aria-label', position === 'bottom' ? 'Resize bottom panel' : 'Resize Context panel');
+    right.setAttribute('aria-valuemin', String(position === 'bottom' ? 160 : 220));
+    right.setAttribute('aria-valuemax', '480');
+    right.setAttribute('aria-valuenow', String(position === 'bottom' ? contextHeight : widths.context));
+    apply(); persist();
+    return position;
+  }
+  function resetLayout() {
+    widths.explorer = 240; widths.context = 300; contextHeight = 240;
+    visibility.explorer = true; visibility.context = true;
+    left.setAttribute('aria-valuenow', '240');
+    dockContext('right');
+    persist();
+  }
   apply();
+  dockContext(contextDock);
   activate(c.initialActivity || 'project');
   return Object.freeze({
     activate: activate,
     widths: function () { return Object.assign({}, widths); },
     setPanelVisible: setPanelVisible,
-    panelVisible: panelVisible
+    panelVisible: panelVisible,
+    dockContext: dockContext,
+    contextDock: function () { return contextDock; },
+    resetLayout: resetLayout
   });
 }));

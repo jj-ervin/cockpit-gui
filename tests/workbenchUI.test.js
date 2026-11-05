@@ -78,3 +78,29 @@ test('workbench panels can be collapsed and restored independently without losin
   assert.throws(() => ui.panelVisible('wrong'), /Unknown workbench panel/);
   assert.throws(() => ui.setPanelVisible('wrong', false), /Unknown workbench panel/);
 });
+
+test('context docks to bottom, resizes by keyboard, restores from storage and resets', () => {
+  const saved = new Map();
+  const storage = { getItem: k => saved.get(k), setItem: (k,v) => saved.set(k,v) };
+  function mount() {
+    const layout = element(), explorer = element(), content = element(), context = element();
+    layout.appendChild(explorer); layout.appendChild(content); layout.appendChild(context);
+    return { layout, explorer, context, ui: createWorkbenchUI({ document: {createElement: element}, layout, explorer, content, context, storage }) };
+  }
+  const first = mount();
+  assert.equal(first.ui.dockContext('bottom'), 'bottom');
+  const grip = first.layout.children[4];
+  assert.equal(grip.attrs['aria-orientation'], 'horizontal');
+  grip.fire('keydown', {key: 'ArrowUp'});
+  assert.equal(first.layout.style.getPropertyValue('--cockpit-context-height'), '256px');
+  first.ui.setPanelVisible('explorer', false);
+  const second = mount();
+  assert.equal(second.ui.contextDock(), 'bottom');
+  assert.equal(second.ui.panelVisible('explorer'), false);
+  assert.equal(second.layout.style.getPropertyValue('--cockpit-context-height'), '256px');
+  second.ui.resetLayout();
+  assert.equal(second.ui.contextDock(), 'right');
+  assert.equal(second.ui.panelVisible('explorer'), true);
+  assert.equal(second.layout.style.getPropertyValue('--cockpit-context-height'), '240px');
+  assert.throws(() => second.ui.dockContext('floating'), /Unknown context dock/);
+});

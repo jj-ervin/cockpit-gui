@@ -1,6 +1,6 @@
 # Package API and compatibility contract
 
-Status: supported API proposal for private `@cockpit/gui` `0.1.0`; public
+Status: supported API baseline for private `@cockpit/gui` `0.1.0`; additive `0.1.1` candidate; public
 distribution and npm publication are not currently authorized. The npm
 `exports` map is the authority for package entry points. Files under `src/` that
 are not exported are implementation details.
@@ -153,7 +153,9 @@ Optional `activities: [{id, label, glyph}]` customize the activity rail,
 `initialActivity` selects its initial state, `onActivity(id)` routes
 navigation back to the host, and `storageKey` namespaces local layout widths.
 Storage has the `getItem`/`setItem` interface and is injected; the workbench
-does not access global persistence services. The frozen API exposes `activate(id)`, `widths()`, `setPanelVisible('explorer'|'context', boolean)`, and `panelVisible('explorer'|'context')`. Hosts own the controls that invoke panel visibility; hiding a panel does not dispose its content. ArrowLeft/ArrowRight resize the side panels from the focused separator, with Shift increasing the step. Panel widths, but not visibility, are persisted by the optional storage adapter.
+does not access global persistence services. The frozen API exposes `activate(id)`, `widths()`, `setPanelVisible('explorer'|'context', boolean)`, and `panelVisible('explorer'|'context')`. Hosts own the controls that invoke panel visibility; hiding a panel does not dispose its content. ArrowLeft/ArrowRight resize the side panels from the focused separator, with Shift increasing the step.
+
+The additive `0.1.1` candidate also exposes `dockContext('right'|'bottom')`, `contextDock()`, and `resetLayout()`. A bottom-docked context uses the same host-owned element. Its focused separator uses ArrowUp/ArrowDown (Shift for a larger step), or pointer drag, to resize height. Widths, bottom height, context position and both panel visibility values persist through the optional storage adapter. Existing width-only saved objects remain readable. Reset restores right docking, visible panels and default dimensions. These methods affect presentation only; no content is copied, executed or detached into a new window.
 
 The workbench does **not** handle project files, document writes, application
 authorization, or AI provider access. Its initial version also does **not**

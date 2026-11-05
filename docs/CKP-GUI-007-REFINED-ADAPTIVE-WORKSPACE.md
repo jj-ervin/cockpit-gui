@@ -41,3 +41,7 @@ Use familiar icons with accessible names and tooltips. Keep task flow obvious th
 5. **Detached panels:** optional multiwindow host adapter, synchronized state and recovery. Validate multi-monitor behavior and assistive technology.
 
 Completion of one milestone does not satisfy the CKP-GUI-007 visual/usability gate or authorize merge, release or publication.
+
+## Right/bottom docking candidate — 2026-11-05
+
+The private `0.1.1` candidate adds context-panel right/bottom docking, keyboard and pointer resizing in either position, persisted panel visibility and layout reset. ProPro consumes a pinned packed artifact and exposes the controls in its Layout menu and conversation header. The same context element moves by CSS region placement; project data and composer content remain host-owned. This does not implement drag-and-drop, arbitrary pane reordering, detached windows or multi-monitor synchronization. Those remain in the panel-system and detached-panel milestones above. Running visual and accessibility evidence belongs in ProPro's consumer report.

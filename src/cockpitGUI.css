@@ -219,15 +219,39 @@
 .cockpit-workbench.context-hidden { grid-template-columns: 48px var(--cockpit-explorer-width) 6px minmax(0,1fr); }
 .cockpit-workbench.context-hidden .cockpit-workbench__resize--right { display: none; }
 .cockpit-workbench.explorer-hidden.context-hidden { grid-template-columns: 48px minmax(0,1fr); }
+.cockpit-workbench.context-bottom {
+  grid-template-columns: var(--cockpit-activity-width) var(--cockpit-explorer-width) 6px minmax(0,1fr);
+  grid-template-rows: minmax(0,1fr) 6px var(--cockpit-context-height);
+}
+.cockpit-workbench.context-bottom > .cockpit-workbench__activity { grid-row: 1 / span 3; }
+.cockpit-workbench.context-bottom > .cockpit-workbench__explorer { grid-column: 2; grid-row: 1 / span 3; }
+.cockpit-workbench.context-bottom > .cockpit-workbench__resize--left { grid-column: 3; grid-row: 1 / span 3; }
+.cockpit-workbench.context-bottom > .cockpit-workbench__content { grid-column: 4; grid-row: 1; overflow: auto; }
+.cockpit-workbench.context-bottom > .cockpit-workbench__resize--right { grid-column: 4; grid-row: 2; cursor: row-resize; }
+.cockpit-workbench.context-bottom > .cockpit-workbench__context { grid-column: 4; grid-row: 3; min-height: 0; }
+.cockpit-workbench.context-bottom.explorer-hidden { grid-template-columns: var(--cockpit-activity-width) minmax(0,1fr); }
+.cockpit-workbench.context-bottom.explorer-hidden > .cockpit-workbench__content,
+.cockpit-workbench.context-bottom.explorer-hidden > .cockpit-workbench__resize--right,
+.cockpit-workbench.context-bottom.explorer-hidden > .cockpit-workbench__context { grid-column: 2; }
+.cockpit-workbench.context-bottom.explorer-hidden > .cockpit-workbench__resize--left { display: none; }
+.cockpit-workbench.context-bottom.context-hidden { grid-template-rows: minmax(0,1fr); }
+.cockpit-workbench.context-bottom.context-hidden > .cockpit-workbench__resize--right { display: none; }
 @media (max-width: 1050px) {
   .cockpit-workbench, .cockpit-workbench.explorer-hidden,
-  .cockpit-workbench.context-hidden, .cockpit-workbench.explorer-hidden.context-hidden {
+  .cockpit-workbench.context-hidden, .cockpit-workbench.explorer-hidden.context-hidden,
+  .cockpit-workbench.context-bottom, .cockpit-workbench.context-bottom.explorer-hidden,
+  .cockpit-workbench.context-bottom.context-hidden {
     grid-template-columns: 48px minmax(0,1fr);
+    grid-template-rows: auto;
     min-height: 0;
   }
   .cockpit-workbench > .cockpit-workbench__explorer,
   .cockpit-workbench > .cockpit-workbench__content,
-  .cockpit-workbench > .cockpit-workbench__context { grid-column: 2; }
+  .cockpit-workbench > .cockpit-workbench__context,
+  .cockpit-workbench.context-bottom > .cockpit-workbench__explorer,
+  .cockpit-workbench.context-bottom > .cockpit-workbench__content,
+  .cockpit-workbench.context-bottom > .cockpit-workbench__context { grid-column: 2; grid-row: auto; }
   .cockpit-workbench__activity { grid-column: 1; grid-row: 1 / span 3; }
-  .cockpit-workbench__resize { display: none; }
+  .cockpit-workbench.context-bottom > .cockpit-workbench__activity { grid-column: 1; grid-row: 1 / span 3; }
+  .cockpit-workbench__resize, .cockpit-workbench.context-bottom > .cockpit-workbench__resize { display: none; }
 }

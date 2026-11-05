@@ -4,6 +4,13 @@ Notable user-facing changes are recorded here. Entries remain Unreleased. The
 repository and package are private; public distribution or publication is not
 currently authorized.
 
+## [0.1.1] - Unreleased private candidate
+
+- Add optional right/bottom context docking, keyboard/pointer resizing, saved
+  panel visibility and layout reset to the workbench API.
+- Keep host-owned panel content and authorization boundaries intact. No package
+  publication, tag, or release is implied.
+
 ## [0.1.0] - Unreleased
 
 - Add the CKP-GUI-006 controlled consumer-pilot evidence and repeatable private
