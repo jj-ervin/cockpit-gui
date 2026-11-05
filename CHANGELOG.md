@@ -4,6 +4,11 @@ Notable user-facing changes are recorded here. Entries remain Unreleased. The
 repository and package are private; public distribution or publication is not
 currently authorized.
 
+## [0.1.2] - Unreleased private candidate
+
+- Let hosts swap the context and explorer side panes, while retaining right and
+  bottom docking, resize controls, visibility and saved layouts.
+
 ## [0.1.1] - Unreleased private candidate
 
 - Add optional right/bottom context docking, keyboard/pointer resizing, saved

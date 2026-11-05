@@ -60,7 +60,7 @@ test('packed package installs offline and exposes only the supported API', () =>
     const installedDir = path.join(consumerDir, 'node_modules', '@cockpit', 'gui');
     const metadata = JSON.parse(fs.readFileSync(path.join(installedDir, 'package.json'), 'utf8'));
     assert.equal(metadata.name, '@cockpit/gui');
-    assert.equal(metadata.version, '0.1.1');
+    assert.equal(metadata.version, '0.1.2');
     assert.equal(metadata.private, true);
     assert.equal(metadata.license, 'MIT');
     assert.equal(Object.hasOwn(metadata, 'publishConfig'), false);

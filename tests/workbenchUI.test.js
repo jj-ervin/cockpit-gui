@@ -102,5 +102,13 @@ test('context docks to bottom, resizes by keyboard, restores from storage and re
   assert.equal(second.ui.contextDock(), 'right');
   assert.equal(second.ui.panelVisible('explorer'), true);
   assert.equal(second.layout.style.getPropertyValue('--cockpit-context-height'), '240px');
+  assert.equal(second.ui.dockContext('left'), 'left');
+  assert.equal(second.layout.classList.contains('context-left'), true);
+  assert.equal(second.layout.children[2].attrs['aria-label'], 'Resize Context panel');
+  assert.equal(second.layout.children[4].attrs['aria-label'], 'Resize Explorer panel');
+  const swapped = mount();
+  assert.equal(swapped.ui.contextDock(), 'left');
+  swapped.ui.resetLayout();
+  assert.equal(swapped.ui.contextDock(), 'right');
   assert.throws(() => second.ui.dockContext('floating'), /Unknown context dock/);
 });

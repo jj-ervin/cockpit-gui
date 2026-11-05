@@ -28,7 +28,7 @@
     context: clamp(Number(previous.context) || 300, 220, 480)
   };
   let contextHeight = clamp(Number(previous.contextHeight) || 240, 160, 480);
-  let contextDock = previous.contextDock === 'bottom' ? 'bottom' : 'right';
+  let contextDock = ['left', 'right', 'bottom'].includes(previous.contextDock) ? previous.contextDock : 'right';
   const visibility = {
     explorer: previous.explorerVisible !== false,
     context: previous.contextVisible !== false
@@ -70,6 +70,7 @@
     layout.style.setProperty('--cockpit-context-width', widths.context + 'px');
     layout.style.setProperty('--cockpit-context-height', contextHeight + 'px');
     layout.classList[contextDock === 'bottom' ? 'add' : 'remove']('context-bottom');
+    layout.classList[contextDock === 'left' ? 'add' : 'remove']('context-left');
     c.explorer.hidden = !visibility.explorer;
     c.context.hidden = !visibility.context;
     layout.classList[visibility.explorer ? 'remove' : 'add']('explorer-hidden');
@@ -84,8 +85,9 @@
     grip.setAttribute('aria-orientation', 'vertical');
     grip.setAttribute('aria-valuemin', String(side === 'left' ? 180 : 220));
     grip.setAttribute('aria-valuemax', String(side === 'left' ? 420 : 480));
+    function resizeKey() { return contextDock === 'left' ? (side === 'left' ? 'context' : 'explorer') : (side === 'left' ? 'explorer' : 'context'); }
     function update(delta) {
-      const key = side === 'left' ? 'explorer' : 'context';
+      const key = resizeKey();
       if (side === 'right' && contextDock === 'bottom') contextHeight = clamp(contextHeight - delta, 160, 480);
       else widths[key] = clamp(widths[key] + delta, key === 'explorer' ? 180 : 220, key === 'explorer' ? 420 : 480);
       grip.setAttribute('aria-valuenow', String(side === 'right' && contextDock === 'bottom' ? contextHeight : widths[key]));
@@ -109,10 +111,10 @@
       if (event.button !== 0) return;
       const bottom = side === 'right' && contextDock === 'bottom';
       const start = bottom ? event.clientY : event.clientX;
-      const initial = bottom ? contextHeight : widths[side === 'left' ? 'explorer' : 'context'];
+      const initial = bottom ? contextHeight : widths[resizeKey()];
       grip.setPointerCapture(event.pointerId);
       function move(e) {
-        const key = side === 'left' ? 'explorer' : 'context';
+        const key = resizeKey();
         if (bottom) contextHeight = clamp(initial - (e.clientY - start), 160, 480);
         else widths[key] = clamp(initial + (side === 'left' ? 1 : -1) * (e.clientX - start),
           key === 'explorer' ? 180 : 220, key === 'explorer' ? 420 : 480);
@@ -155,13 +157,17 @@
     return visibility[panel];
   }
   function dockContext(position) {
-    if (position !== 'right' && position !== 'bottom') throw new TypeError('Unknown context dock');
+    if (position !== 'left' && position !== 'right' && position !== 'bottom') throw new TypeError('Unknown context dock');
     contextDock = position;
+    left.setAttribute('aria-label', position === 'left' ? 'Resize Context panel' : 'Resize Explorer panel');
+    left.setAttribute('aria-valuemin', String(position === 'left' ? 220 : 180));
+    left.setAttribute('aria-valuemax', String(position === 'left' ? 480 : 420));
+    left.setAttribute('aria-valuenow', String(widths[position === 'left' ? 'context' : 'explorer']));
     right.setAttribute('aria-orientation', position === 'bottom' ? 'horizontal' : 'vertical');
-    right.setAttribute('aria-label', position === 'bottom' ? 'Resize bottom panel' : 'Resize Context panel');
-    right.setAttribute('aria-valuemin', String(position === 'bottom' ? 160 : 220));
-    right.setAttribute('aria-valuemax', '480');
-    right.setAttribute('aria-valuenow', String(position === 'bottom' ? contextHeight : widths.context));
+    right.setAttribute('aria-label', position === 'bottom' ? 'Resize bottom panel' : position === 'left' ? 'Resize Explorer panel' : 'Resize Context panel');
+    right.setAttribute('aria-valuemin', String(position === 'bottom' ? 160 : position === 'left' ? 180 : 220));
+    right.setAttribute('aria-valuemax', String(position === 'left' ? 420 : 480));
+    right.setAttribute('aria-valuenow', String(position === 'bottom' ? contextHeight : widths[position === 'left' ? 'explorer' : 'context']));
     apply(); persist();
     return position;
   }
