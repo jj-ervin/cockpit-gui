@@ -10,6 +10,8 @@ The recognizable shell has a Home action returning to the dashboard, a left acti
 
 The universal composer follows the current task across modules. It accepts natural language, `#` tags, `@` project/file references and `/` CLI commands. A visible scope selector supports web, project and file search, with context suggestions that the user can override. A `+` control opens a labeled attachment picker and its menu; an asset manager may be a separate view. Show the selected context, attachments, destination and action before submission. Searching, drafting and executing are distinct states. The host owns file access, web access, CLI routing, authorization and confirmation; typing a command or attaching a file never grants execution permission.
 
+**Initial visual target:** Soft Precision, with a neutral foundation, restrained accent color, 13–14px readable base text, a 48–56px activity rail, 40–48px title bar, compact 36–40px inputs, 5–7px control radius and 12–16px dashboard-card radius. These are prototype targets, subject to contrast, zoom, touch and human legibility review. The shell should feel precise while project cards remain welcoming. The initial appearance is a composed screen, not a settings toggle.
+
 Use familiar icons with accessible names and tooltips. Keep task flow obvious through progressive disclosure: primary actions remain visible, advanced controls live in menus or settings, and empty/error/recovery states explain the next action. Support keyboard, screen reader, focus restoration, 200% zoom, narrow screens, forced colors, reduced motion and readable contrast from the first slice.
 
 ## Ownership
@@ -32,7 +34,7 @@ Use familiar icons with accessible names and tooltips. Keep task flow obvious th
 
 ## Coding milestones
 
-1. **Vertical slice:** host Home navigation and Balanced/Refined density persistence with tests and real browser captures. Keep the existing package API and project data contract intact.
+1. **Visual workspace slice:** make Refined Balanced the actual default shell: compact title/search, persistent activity rail, useful central dashboard, visible contextual conversation pane and a composer with local search and attachment selection. Home returns to the dashboard. Test the running screen and preserve project data. Density is one later appearance option, not this milestone's product outcome.
 2. **Panel system:** bottom slot, keyboard/pointer resize, hide/restore/reorder and viewport-safe layout state. Test in two distinct hosts before stabilizing a shared API.
 3. **Appearance:** theme, colors, icon and typography controls with named presets, validation, reset and migration-safe storage.
 4. **Composer:** token parsing, scoped search, attachment picker and host callbacks; add permission review before any executable action.
