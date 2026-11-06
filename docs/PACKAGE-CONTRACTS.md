@@ -1,6 +1,6 @@
 # Package API and compatibility contract
 
-Status: supported API baseline for private `@cockpit/gui` `0.1.0`; additive `0.1.3` candidate; public
+Status: supported API baseline for private `@cockpit/gui` `0.1.0`; additive `0.1.4` candidate; public
 distribution and npm publication are not currently authorized. The npm
 `exports` map is the authority for package entry points. Files under `src/` that
 are not exported are implementation details.
@@ -160,6 +160,12 @@ The additive `0.1.1` candidate also exposes `dockContext('right'|'bottom')`, `co
 The additive `0.1.2` candidate accepts `dockContext('left')`. Left placement swaps the context and explorer side panes, preserving each pane's host-owned content and saved visibility. Both separators resize the panel they border and expose the correct accessible name and range. This does not create arbitrary panel slots, drag docking, or external-window capability.
 
 The additive `0.1.3` candidate accepts an optional host-owned `bottom` element. When supplied, `setPanelVisible('bottom', boolean)`, `panelVisible('bottom')`, `bottomHeight()` and `setBottomHeight(pixels)` control an independent bottom slot. A separate horizontal separator supports ArrowUp/ArrowDown and pointer resizing; bottom visibility and height persist with the existing layout storage key. Reset hides bottom and restores its default height. The side `context` stays independent and can still swap left/right. A previously saved bottom-docked context is normalized to right placement with bottom visible; `dockContext('bottom')` is unavailable when the separate bottom slot is supplied. Hosts without `bottom` retain the earlier context-bottom API and layout behavior.
+
+## Tabbed Explorer (`0.1.4` candidate)
+
+`@cockpit/gui/tabbed-explorer` exports `createTabbedExplorerUI({document,root,tabs,storage?,storageKey?})`. Each tab has a unique `id`, `label`, optional `icon`, optional `sortOptions`, and a provider. A provider's `getNodes()` returns an array or `{nodes,message}` and may return a promise; `open(node)` handles a host-authorized open action. Nodes use `{id,label,icon?,meta?,children?}`. The GUI treats labels as text and owns no filesystem, Git, asset, conversation or project authority. A missing provider displays an explicit unavailable state.
+
+The component owns icon tabs with labels/tooltips, a per-view filter and sort selector, sibling sorting, nested tree presentation, keyboard tab and tree navigation, and saved view state. `activate(id)`, `activeTab()`, `refresh()`, `setTabVisible(id,boolean)`, `moveTab(id,direction)`, `tabOrder()` and `tabVisible(id)` are exposed for host controls. Its built-in menu can hide, show and reorder tabs. At least one view remains visible. Storage is optional and namespaced. The host must provide stable node IDs, provider data, permissions and meaningful actions. The first slice does not claim filesystem browsing, drag/drop, context menus, virtualized loading or connected Git/conversation history.
 
 The workbench does **not** handle project files, document writes, application
 authorization, or AI provider access. Its initial version also does **not**

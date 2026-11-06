@@ -4,6 +4,13 @@ Notable user-facing changes are recorded here. Entries remain Unreleased. The
 repository and package are private; public distribution or publication is not
 currently authorized.
 
+## [0.1.4] - Unreleased private candidate
+
+- Add a reusable tabbed Explorer with provider-owned data, accessible tab and tree
+  navigation, per-view filter/sort/expansion state, and configurable tab order
+  and visibility. ProPro supplies local project data and explicit unavailable
+  states for sources it cannot access.
+
 ## [0.1.3] - Unreleased private candidate
 
 - Add an optional independent bottom workbench slot with its own visibility, height,
