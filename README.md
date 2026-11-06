@@ -21,7 +21,7 @@ exercise a local packed copy without publishing:
 
 ```sh
 npm pack
-npm install ./cockpit-gui-0.1.3.tgz
+npm install ./cockpit-gui-0.1.4.tgz
 ```
 
 The package supports Node.js 22 and later for CommonJS or Node ESM imports.
