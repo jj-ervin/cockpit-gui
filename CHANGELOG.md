@@ -4,6 +4,12 @@ Notable user-facing changes are recorded here. Entries remain Unreleased. The
 repository and package are private; public distribution or publication is not
 currently authorized.
 
+## [0.1.5] - Unreleased private candidate
+
+- Add a host-neutral composer interaction layer for token suggestions and local
+  attachment selection. The host still owns search, submission, file access and
+  command authorization.
+
 ## [0.1.4] - Unreleased private candidate
 
 - Add a reusable tabbed Explorer with provider-owned data, accessible tab and tree
