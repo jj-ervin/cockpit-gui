@@ -1,6 +1,6 @@
 # Package API and compatibility contract
 
-Status: supported API baseline for private `@cockpit/gui` `0.1.0`; additive `0.1.4` candidate; public
+Status: supported API baseline for private `@cockpit/gui` `0.1.0`; additive `0.1.5` candidate; public
 distribution and npm publication are not currently authorized. The npm
 `exports` map is the authority for package entry points. Files under `src/` that
 are not exported are implementation details.
@@ -13,10 +13,13 @@ are not exported are implementation details.
 | `@cockpit/gui/command-palette` | `createCommandPaletteUI(options)` | Explicit command palette entry. |
 | `@cockpit/gui/workspace` | `createWorkspaceUI(options)` | Workspace tabs and panel state presentation. |
 | `@cockpit/gui/workbench` | `createWorkbenchUI(options)` | Reusable workbench shell, activity rail and resizable side panels. |
+| `@cockpit/gui/tabbed-explorer` | `createTabbedExplorerUI(options)` | Provider-backed Explorer tabs and tree navigation. |
+| `@cockpit/gui/composer` | `createComposerUI(options)` | Suggestions and local attachment presentation in a host form. |
 | `@cockpit/gui/styles.css` | CSS stylesheet | Shared component and responsive styles. |
 
 The JavaScript entry files use CommonJS exports in Node and expose the browser
-globals `CockpitCommandPaletteUI` and `CockpitWorkspaceUI` when loaded as plain
+globals `CockpitCommandPaletteUI`, `CockpitWorkspaceUI`, `CockpitWorkbenchUI`,
+`CockpitTabbedExplorerUI` and `CockpitComposerUI` when loaded as plain
 scripts. Node ESM consumers can default-import the CommonJS factories. Named
 ESM exports, TypeScript declarations, React/Vue wrappers, and deep imports are
 not supported in `0.1.x`.
@@ -166,6 +169,10 @@ The additive `0.1.3` candidate accepts an optional host-owned `bottom` element. 
 `@cockpit/gui/tabbed-explorer` exports `createTabbedExplorerUI({document,root,tabs,storage?,storageKey?})`. Each tab has a unique `id`, `label`, optional `icon`, optional `sortOptions`, and a provider. A provider's `getNodes()` returns an array or `{nodes,message}` and may return a promise; `open(node)` handles a host-authorized open action. Nodes use `{id,label,icon?,meta?,children?}`. The GUI treats labels as text and owns no filesystem, Git, asset, conversation or project authority. A missing provider displays an explicit unavailable state.
 
 The component owns icon tabs with labels/tooltips, a per-view filter and sort selector, sibling sorting, nested tree presentation, keyboard tab and tree navigation, and saved view state. `activate(id)`, `activeTab()`, `refresh()`, `setTabVisible(id,boolean)`, `moveTab(id,direction)`, `tabOrder()` and `tabVisible(id)` are exposed for host controls. Its built-in menu can hide, show and reorder tabs. At least one view remains visible. Storage is optional and namespaced. The host must provide stable node IDs, provider data, permissions and meaningful actions. The first slice does not claim filesystem browsing, drag/drop, context menus, virtualized loading or connected Git/conversation history.
+
+## Composer (`0.1.5` candidate)
+
+`@cockpit/gui/composer` exports `createComposerUI({document,form,input,suggestions,attachments,fileInput,getSuggestions?,onAttachmentsChange?})`. It enhances host-owned form elements with keyboard-operable `#`, `@` and `/` suggestions and local attachment chips. `getSuggestions(prefix,query)` supplies host-owned labels; the component filters non-string values and displays at most six. `files()` returns a copy of the selected browser `File` objects. `clearAttachments()` removes them and notifies the host. `clearSuggestions()` dismisses transient suggestions. Enter submits the host form, Shift+Enter inserts a newline, and Escape dismisses suggestions. The host must provide a labeled input, file picker and submission handler. The package neither reads file contents nor uploads, searches, routes commands or grants execution authority.
 
 The workbench does **not** handle project files, document writes, application
 authorization, or AI provider access. Its initial version also does **not**

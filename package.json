@@ -1,6 +1,6 @@
 {
   "name": "@cockpit/gui",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "private": true,
   "description": "Host-neutral, accessible Cockpit GUI components",
   "type": "commonjs",
@@ -35,7 +35,8 @@
     "./workspace": "./src/workspaceUI.js",
     "./styles.css": "./src/cockpitGUI.css",
     "./workbench": "./src/workbenchUI.js",
-    "./tabbed-explorer": "./src/tabbedExplorerUI.js"
+    "./tabbed-explorer": "./src/tabbedExplorerUI.js",
+    "./composer": "./src/composerUI.js"
   },
   "files": [
     "README.md",

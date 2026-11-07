@@ -21,6 +21,10 @@
   --cockpit-success: #9bd6b4;
 }
 
+.cockpit-composer__attachment { display:inline-flex; align-items:center; gap:4px; max-width:100%; padding:4px 6px; border-radius:var(--cockpit-radius); background:var(--cockpit-surface-raised); color:var(--cockpit-text); overflow-wrap:anywhere; }
+.cockpit-composer__attachment button { min-width:32px; min-height:32px; border:1px solid var(--cockpit-border); border-radius:var(--cockpit-radius); background:transparent; color:inherit; cursor:pointer; }
+.cockpit-composer__attachment button:focus-visible { outline:3px solid var(--cockpit-focus); outline-offset:2px; }
+
 [data-cockpit-theme="light"] {
   color-scheme: light;
   --cockpit-bg: #f3f5f8;

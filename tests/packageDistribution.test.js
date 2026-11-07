@@ -17,6 +17,7 @@ const allowedFiles = [
   'package.json',
   'src/cockpitGUI.css',
   'src/commandPaletteUI.js',
+  'src/composerUI.js',
   'src/tabbedExplorerUI.js',
   'src/workbenchUI.js',
   'src/workspaceUI.js',
@@ -81,6 +82,9 @@ test('packed package installs offline and exposes only the supported API', () =>
       "assert.throws(() => root({}), /requires document/);",
       "const createWorkbench = require('@cockpit/gui/workbench');",
       "const createExplorer = require('@cockpit/gui/tabbed-explorer');",
+      "const createComposer = require('@cockpit/gui/composer');",
+      "assert.equal(typeof createComposer, 'function');",
+      "assert.throws(() => createComposer({}), /requires document/);",
       "assert.equal(typeof createExplorer, 'function');",
       "assert.throws(() => createExplorer({}), /requires document/);",
       "assert.equal(typeof createWorkbench, 'function');",
@@ -115,6 +119,8 @@ test('packed package installs offline and exposes only the supported API', () =>
       "import workspace from '@cockpit/gui/workspace';",
       "import workbench from '@cockpit/gui/workbench';",
       "import explorer from '@cockpit/gui/tabbed-explorer';",
+      "import composer from '@cockpit/gui/composer';",
+      "assert.equal(typeof composer, 'function');",
       "assert.equal(typeof explorer, 'function');",
       "assert.equal(typeof workbench, 'function');",
       "assert.equal(typeof commandPalette, 'function');",
@@ -127,6 +133,7 @@ test('packed package installs offline and exposes only the supported API', () =>
       ['src/workspaceUI.js', 'CockpitWorkspaceUI'],
       ['src/workbenchUI.js', 'CockpitWorkbenchUI'],
       ['src/tabbedExplorerUI.js', 'CockpitTabbedExplorerUI'],
+      ['src/composerUI.js', 'CockpitComposerUI'],
     ]) {
       const browserGlobal = {};
       vm.runInNewContext(fs.readFileSync(path.join(installedDir, file), 'utf8'), {
